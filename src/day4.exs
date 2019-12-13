@@ -96,7 +96,7 @@ defmodule Day4 do
   # Part 1: Check to see if the digit prior to the current digit and the
   # current digit are equivalent.
 
-  defp adjacent?(_digits, index) when index == 0, do: false
+  defp adjacent?(_digits, 0), do: false
 
   defp adjacent?(digits, index),
     do: Enum.at(digits, index) == Enum.at(digits, index - 1)
@@ -105,28 +105,14 @@ defmodule Day4 do
   # current digit are equivalent, and ensure that they are not part of a larger
   # group of matching digits.
 
-  defp exactly_2_adjacent?(_digits, index) when index == 0, do: false
-
-  defp exactly_2_adjacent?(digits, index) when index == 1 do
-    cur_digit = Enum.at(digits, index)
-
-    cur_digit == Enum.at(digits, index - 1) and
-      cur_digit != Enum.at(digits, index + 1)
-  end
-
-  defp exactly_2_adjacent?(digits, index) when length(digits) - 1 == index do
-    cur_digit = Enum.at(digits, index)
-
-    cur_digit == Enum.at(digits, index - 1) and
-      cur_digit != Enum.at(digits, index - 2)
-  end
+  defp exactly_2_adjacent?(_digits, 0), do: false
 
   defp exactly_2_adjacent?(digits, index) do
     cur_digit = Enum.at(digits, index)
 
     cur_digit == Enum.at(digits, index - 1) and
-      cur_digit != Enum.at(digits, index + 1) and
-      cur_digit != Enum.at(digits, index - 2)
+      cur_digit != Enum.at(digits, index + 1, nil) and
+      cur_digit != Enum.at(digits, index - 2, nil)
   end
 
   # Split a password into a list of its digits.

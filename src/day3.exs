@@ -1,5 +1,5 @@
 defmodule Point do
-  defstruct x: 0, y: 0, ctr: 1
+  defstruct x: 0, y: 0, ctr: 0
 
   def get_dimensions(point), do: {point.x, point.y}
 end
@@ -79,7 +79,10 @@ defmodule Day3 do
   end
 
   defp find_collisions({points1, points2}) do
-    points1_map = for point <- points1, into: %{}, do: {Point.get_dimensions(point), point}
+    points1_map =
+      for point <- points1,
+          into: %{},
+          do: {Point.get_dimensions(point), point}
 
     find_collisions_in_map(points2, points1_map)
   end
