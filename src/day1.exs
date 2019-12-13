@@ -36,7 +36,7 @@ defmodule Day1 do
   end
 
   defp calculate_fuel_part_1(mass) do
-    Kernel.trunc(mass / 3) - 2
+    trunc(mass / 3) - 2
   end
 
   defp calculate_fuel_part_2(mass) do
