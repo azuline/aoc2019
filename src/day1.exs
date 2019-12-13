@@ -2,8 +2,6 @@ defmodule Day1 do
   @moduledoc """
   Advent of Code 2019
   Day 1: The Tyranny of the Rocket Equation
-
-  $ elixir day1.exs input/day1.txt
   """
 
   def part1() do
@@ -32,17 +30,11 @@ defmodule Day1 do
   end
 
   defp get_masses() do
-    case System.argv() do
-      [filepath] ->
-        File.open!(filepath)
-        |> IO.stream(:line)
-        |> Stream.map(&String.trim/1)
-        |> Stream.map(&String.to_integer/1)
-
-      _ ->
-        IO.puts("Pass a file containing the inputs as an argument.")
-        System.halt(1)
-    end
+    Path.join(__DIR__, "inputs/day1.txt")
+    |> File.open!()
+    |> IO.stream(:line)
+    |> Stream.map(&String.trim/1)
+    |> Stream.map(&String.to_integer/1)
   end
 end
 

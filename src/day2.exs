@@ -2,8 +2,6 @@ defmodule Day2 do
   @moduledoc """
   Advent of Code 2019
   Day 2: 1202 Program Alarm
-
-  $ elixir day2.exs input/day2.txt
   """
 
   @part2_target 19_690_720
@@ -32,17 +30,11 @@ defmodule Day2 do
   end
 
   defp get_program() do
-    case System.argv() do
-      [filepath] ->
-        File.read!(filepath)
-        |> String.trim()
-        |> String.split(",")
-        |> Enum.map(&String.to_integer/1)
-
-      _ ->
-        IO.puts("Pass a file containing the inputs as an argument.")
-        System.halt(1)
-    end
+    Path.join(__DIR__, "inputs/day2.txt")
+    |> File.read!()
+    |> String.trim()
+    |> String.split(",")
+    |> Enum.map(&String.to_integer/1)
   end
 
   defp restore_state(program, noun \\ 12, verb \\ 2) do

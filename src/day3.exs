@@ -33,17 +33,11 @@ defmodule Day3 do
   end
 
   defp get_specs() do
-    case System.argv() do
-      [filepath] ->
-        File.open!(filepath)
-        |> IO.stream(:line)
-        |> Stream.map(&String.trim/1)
-        |> Enum.map(&String.split(&1, ","))
-
-      _ ->
-        IO.puts("Pass a file containing the inputs as an argument.")
-        System.halt(1)
-    end
+    Path.join(__DIR__, "inputs/day3.txt")
+    |> File.open!()
+    |> IO.stream(:line)
+    |> Stream.map(&String.trim/1)
+    |> Enum.map(&String.split(&1, ","))
   end
 
   defp generate_points(specs) do
