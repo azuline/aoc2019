@@ -1,3 +1,9 @@
+defmodule Point do
+  defstruct x: 0, y: 0, ctr: 1
+
+  def get_dimensions(point), do: {point.x, point.y}
+end
+
 defmodule Day3 do
   @moduledoc """
   Advent of Code 2019
@@ -47,7 +53,7 @@ defmodule Day3 do
     }
   end
 
-  defp generate_points_from_spec(spec, points \\ [], cur \\ %{x: 0, y: 0, ctr: 0})
+  defp generate_points_from_spec(spec, points \\ [], cur \\ %Point{})
 
   defp generate_points_from_spec(spec, points, _cur)
        when spec == [] or spec == nil,
@@ -79,7 +85,7 @@ defmodule Day3 do
   end
 
   defp find_collisions({points1, points2}) do
-    points1_map = for point <- points1, into: %{}, do: {Map.delete(point, :ctr), point}
+    points1_map = for point <- points1, into: %{}, do: {Point.get_dimensions(point), point}
 
     find_collisions_in_map(points2, points1_map)
   end
@@ -89,7 +95,7 @@ defmodule Day3 do
   defp find_collisions_in_map([], _map, collisions), do: collisions
 
   defp find_collisions_in_map([point | points], map, collisions) do
-    key = %{x: point.x, y: point.y}
+    key = Point.get_dimensions(point)
 
     collisions =
       if Map.has_key?(map, key),
