@@ -17,11 +17,11 @@ defmodule Day2 do
     program = get_program()
 
     for(noun <- 0..100, verb <- 0..100, do: {noun, verb})
-    |> Enum.find(nil, &test_noun_verb(program, &1))
+    |> Enum.find(nil, &valid_noun_verb?(program, &1))
     |> (fn {noun, verb} -> 100 * noun + verb end).()
   end
 
-  defp test_noun_verb(program, {noun, verb}) do
+  defp valid_noun_verb?(program, {noun, verb}) do
     program
     |> restore_state(noun, verb)
     |> run_program()

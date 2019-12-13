@@ -13,7 +13,7 @@ defmodule Day1 do
   end
 
   defp fuel_of_mass_calculator(mass) do
-    trunc(mass / 3) - 2
+    div(mass, 3) - 2
   end
 
   defp fuel_of_fuel_calculator(mass) do
