@@ -16,7 +16,6 @@ defmodule Day3 do
     |> Enum.map(&elem(&1, 0))
     |> Enum.min_by(&(abs(&1.x) + abs(&1.y)))
     |> (&(abs(&1.x) + abs(&1.y))).()
-    |> IO.puts()
   end
 
   def part2() do
@@ -25,7 +24,6 @@ defmodule Day3 do
     |> find_collisions()
     |> Enum.min_by(&(elem(&1, 0).ctr + elem(&1, 1).ctr))
     |> (&(elem(&1, 0).ctr + elem(&1, 1).ctr)).()
-    |> IO.puts()
   end
 
   defp get_specs() do
@@ -69,13 +67,19 @@ defmodule Day3 do
     end
   end
 
-  defp move_cur(cur, "U"), do: %{x: cur.x, y: cur.y + 1, ctr: cur.ctr + 1}
-  defp move_cur(cur, "R"), do: %{x: cur.x + 1, y: cur.y, ctr: cur.ctr + 1}
-  defp move_cur(cur, "D"), do: %{x: cur.x, y: cur.y - 1, ctr: cur.ctr + 1}
-  defp move_cur(cur, "L"), do: %{x: cur.x - 1, y: cur.y, ctr: cur.ctr + 1}
+  defp move_cur(cur, direction) do
+    cur = %{cur | ctr: cur.ctr + 1}
+
+    case direction do
+      "U" -> %{cur | y: cur.y + 1}
+      "R" -> %{cur | x: cur.x + 1}
+      "D" -> %{cur | y: cur.y - 1}
+      "L" -> %{cur | x: cur.x - 1}
+    end
+  end
 
   defp find_collisions({points1, points2}) do
-    points1_map = for point <- points1, into: %{}, do: {%{x: point.x, y: point.y}, point}
+    points1_map = for point <- points1, into: %{}, do: {Map.delete(point, :ctr), point}
 
     find_collisions_in_map(points2, points1_map)
   end
@@ -87,17 +91,17 @@ defmodule Day3 do
   defp find_collisions_in_map([point | points], map, collisions) do
     key = %{x: point.x, y: point.y}
 
-    if Map.has_key?(map, key) do
-      collisions = [{point, Map.get(map, key)} | collisions]
-      find_collisions_in_map(points, map, collisions)
-    else
-      find_collisions_in_map(points, map, collisions)
-    end
+    collisions =
+      if Map.has_key?(map, key),
+        do: [{point, Map.get(map, key)} | collisions],
+        else: collisions
+
+    find_collisions_in_map(points, map, collisions)
   end
 end
 
-IO.puts("Part 1:")
-Day3.part1()
+part1 = Day3.part1()
+IO.puts("Part 1: #{part1}")
 
-IO.puts("\nPart 2:")
-Day3.part2()
+part2 = Day3.part2()
+IO.puts("Part 2: #{part2}")
