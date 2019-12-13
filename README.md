@@ -2,8 +2,14 @@ My solutions for the Advent of Code 2019 in Elixir.
 
 https://adventofcode.com/2019
 
-Run scripts with:
+Run scripts with
 
 ```sh
-$ elixir src/dayX.exs
+$ mix day X
+```
+
+Run tests with
+
+```sh
+$ mix test
 ```

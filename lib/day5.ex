@@ -4,6 +4,14 @@ defmodule Day5 do
   Day 2: Sunny with a Chance of Asteroids
   """
 
+  def execute() do
+    IO.puts("Running Part 1:")
+    Day5.part1()
+
+    # part2 = Day5.part2()
+    # IO.puts("Part 2: #{part2}")
+  end
+
   def part1() do
     get_program()
     |> run_program()
@@ -22,7 +30,7 @@ defmodule Day5 do
     |> execute_opcode(program, position)
   end
 
-  defp execute_opcode(%{code: 99} = _opcode, program, _position) do
+  defp execute_opcode(%{code: 99} = _opcode, _program, _position) do
     IO.puts("Exit code recevied, stopping.")
   end
 
@@ -132,9 +140,3 @@ defmodule Opcode do
     |> rem(10)
   end
 end
-
-IO.puts("Running Part 1:")
-Day5.part1()
-
-# part2 = Day5.part2()
-# IO.puts("Part 2: #{part2}")
