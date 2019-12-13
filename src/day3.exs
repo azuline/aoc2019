@@ -10,8 +10,21 @@ defmodule Day3 do
     get_specs()
     |> generate_points()
     |> find_collisions()
+    # Since we only care about {x, y}, and not {x, y, ctr}, we can discard
+    # the second point in the {point1, point2} tuple because they have the
+    # same {x, y}.
+    |> Enum.map(&elem(&1, 0))
     |> Enum.min_by(&(abs(&1.x) + abs(&1.y)))
     |> (&(abs(&1.x) + abs(&1.y))).()
+    |> IO.puts()
+  end
+
+  def part2() do
+    get_specs()
+    |> generate_points()
+    |> find_collisions()
+    |> Enum.min_by(&(elem(&1, 0).ctr + elem(&1, 1).ctr))
+    |> (&(elem(&1, 0).ctr + elem(&1, 1).ctr)).()
     |> IO.puts()
   end
 
@@ -36,7 +49,7 @@ defmodule Day3 do
     }
   end
 
-  defp generate_points_from_spec(spec, points \\ [], cur \\ %{x: 0, y: 0})
+  defp generate_points_from_spec(spec, points \\ [], cur \\ %{x: 0, y: 0, ctr: 0})
 
   defp generate_points_from_spec(spec, points, _cur)
        when spec == [] or spec == nil,
@@ -56,16 +69,35 @@ defmodule Day3 do
     end
   end
 
-  defp move_cur(cur, "U"), do: %{x: cur.x, y: cur.y + 1}
-  defp move_cur(cur, "R"), do: %{x: cur.x + 1, y: cur.y}
-  defp move_cur(cur, "D"), do: %{x: cur.x, y: cur.y - 1}
-  defp move_cur(cur, "L"), do: %{x: cur.x - 1, y: cur.y}
+  defp move_cur(cur, "U"), do: %{x: cur.x, y: cur.y + 1, ctr: cur.ctr + 1}
+  defp move_cur(cur, "R"), do: %{x: cur.x + 1, y: cur.y, ctr: cur.ctr + 1}
+  defp move_cur(cur, "D"), do: %{x: cur.x, y: cur.y - 1, ctr: cur.ctr + 1}
+  defp move_cur(cur, "L"), do: %{x: cur.x - 1, y: cur.y, ctr: cur.ctr + 1}
 
   defp find_collisions({points1, points2}) do
-    points2_set = MapSet.new(points2)
-    Enum.filter(points1, &MapSet.member?(points2_set, &1))
+    points1_map = for point <- points1, into: %{}, do: {%{x: point.x, y: point.y}, point}
+
+    find_collisions_in_map(points2, points1_map)
+  end
+
+  defp find_collisions_in_map(points, map, collisions \\ [])
+
+  defp find_collisions_in_map([], _map, collisions), do: collisions
+
+  defp find_collisions_in_map([point | points], map, collisions) do
+    key = %{x: point.x, y: point.y}
+
+    if Map.has_key?(map, key) do
+      collisions = [{point, Map.get(map, key)} | collisions]
+      find_collisions_in_map(points, map, collisions)
+    else
+      find_collisions_in_map(points, map, collisions)
+    end
   end
 end
 
 IO.puts("Part 1:")
 Day3.part1()
+
+IO.puts("\nPart 2:")
+Day3.part2()
