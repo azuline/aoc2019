@@ -16,45 +16,99 @@ defmodule Day5 do
     program = get_program()
 
     IO.puts("Part 1: #{part1(program)}")
+    IO.puts("Part 2: #{part2(program)}")
   end
 
   def part1(program), do: run_program(program)
+  def part2(program), do: run_program(program, 0, 0, 5)
 
-  def run_program(program, position \\ 0, diagnostic_code \\ 0) do
+  def run_program(program, position \\ 0, diagnostic_code \\ 0, input \\ 1) do
     Opcode.at_position(program, position)
-    |> run_opcode(program, diagnostic_code)
+    |> run_opcode(program, diagnostic_code, input)
   end
 
-  defp run_opcode(%{code: 99}, _program, diagnostic_code) do
+  defp run_opcode(%{code: 99}, _program, diagnostic_code, _input) do
     diagnostic_code
   end
 
-  defp run_opcode(%{code: 4} = opcode, program, _diagnostic_code) do
-    program
-    |> execute_operation(opcode, opcode.params)
-    |> (&run_program(program, opcode.next_position, &1)).()
+  defp run_opcode(%{code: 4} = opcode, program, _diagnostic_code, _input) do
+    diagnostic_code =
+      Enum.at(
+        program,
+        Enum.at(opcode.params, 0)
+      )
+
+    run_program(program, opcode.next_position, diagnostic_code)
   end
 
-  defp run_opcode(opcode, program, diagnostic_code) do
-    program
-    |> execute_operation(opcode, opcode.params)
+  defp run_opcode(
+         %{code: 1, params: [param1, param2, param3]} = opcode,
+         program,
+         diagnostic_code,
+         _input
+       ) do
+    List.replace_at(program, param3, param1 + param2)
     |> run_program(opcode.next_position, diagnostic_code)
   end
 
-  defp execute_operation(program, %{code: 1}, [param1, param2, param3]) do
-    List.replace_at(program, param3, param1 + param2)
-  end
-
-  defp execute_operation(program, %{code: 2}, [param1, param2, param3]) do
+  defp run_opcode(
+         %{code: 2, params: [param1, param2, param3]} = opcode,
+         program,
+         diagnostic_code,
+         _input
+       ) do
     List.replace_at(program, param3, param1 * param2)
+    |> run_program(opcode.next_position, diagnostic_code)
   end
 
-  defp execute_operation(program, %{code: 3}, [param]) do
-    List.replace_at(program, param, _input = 1)
+  defp run_opcode(
+         %{code: 3, params: [param1]} = opcode,
+         program,
+         diagnostic_code,
+         input
+       ) do
+    List.replace_at(program, param1, input)
+    |> run_program(opcode.next_position, diagnostic_code)
   end
 
-  defp execute_operation(program, %{code: 4}, [param]) do
-    Enum.at(program, param)
+  defp run_opcode(
+         %{code: 5, params: [param1, param2]} = opcode,
+         program,
+         diagnostic_code,
+         _input
+       ) do
+    next_position = if param1 != 0, do: param2, else: opcode.next_position
+    run_program(program, next_position, diagnostic_code)
+  end
+
+  defp run_opcode(
+         %{code: 6, params: [param1, param2]} = opcode,
+         program,
+         diagnostic_code,
+         _input
+       ) do
+    next_position = if param1 == 0, do: param2, else: opcode.next_position
+    run_program(program, next_position, diagnostic_code)
+  end
+
+  defp run_opcode(
+         %{code: 7, params: [param1, param2, param3]} = opcode,
+         program,
+         diagnostic_code,
+         _input
+       ) do
+    List.replace_at(program, param3, if(param1 < param2, do: 1, else: 0))
+    |> run_program(opcode.next_position, diagnostic_code)
+  end
+
+  defp run_opcode(
+         %{code: 8, params: [param1, param2, param3]} = opcode,
+         program,
+         diagnostic_code,
+         _input
+       ) do
+    List.replace_at(program, param3, if(param1 == param2, do: 1, else: 0))
+    |> run_program(opcode.next_position, diagnostic_code)
   end
 end
 
@@ -69,7 +123,11 @@ defmodule Opcode do
     1 => 3,
     2 => 3,
     3 => 1,
-    4 => 1
+    4 => 1,
+    5 => 2,
+    6 => 2,
+    7 => 3,
+    8 => 3
   }
 
   # These are indices of parameters that are for writing--that is, they should
@@ -77,10 +135,14 @@ defmodule Opcode do
   # value when constructing the opcode.
 
   @write_indices %{
-    1 => [3],
-    2 => [3],
-    3 => [1],
-    4 => [1]
+    1 => [2],
+    2 => [2],
+    3 => [0],
+    4 => [0],
+    5 => [],
+    6 => [],
+    7 => [2],
+    8 => [2]
   }
 
   def at_position(program, position) do
@@ -100,12 +162,18 @@ defmodule Opcode do
 
   defp construct({code, modes}, program, position) do
     params =
-      for i <- 1..@num_params[code] do
-        value = Enum.at(program, position + i)
+      try do
+        for i <- 1..@num_params[code] do
+          value = Enum.at(program, position + i)
 
-        if parse_mode(modes, i - 1) == 0 and i not in @write_indices[code],
-          do: Enum.at(program, value),
-          else: value
+          if parse_mode(modes, i - 1) == 0 and (i - 1) not in @write_indices[code],
+            do: Enum.at(program, value),
+            else: value
+        end
+      rescue
+        ArgumentError ->
+          IO.puts("Invalid opcode received: #{code}")
+          System.halt(1)
       end
 
     %__MODULE__{
