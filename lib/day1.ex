@@ -15,20 +15,12 @@ defmodule Day1 do
   def execute() do
     masses = get_masses()
 
-    part1 = Day1.part1(masses)
-    IO.puts("Part 1: #{part1}")
-
-    part2 = Day1.part2(masses)
-    IO.puts("Part 2: #{part2}")
+    IO.puts("Part 1: #{part1(masses)}")
+    IO.puts("Part 2: #{part2(masses)}")
   end
 
-  def part1(masses) do
-    runner(masses, &fuel_of_mass_calculator/1)
-  end
-
-  def part2(masses) do
-    runner(masses, &fuel_of_fuel_calculator/1)
-  end
+  def part1(masses), do: runner(masses, &fuel_of_mass_calculator/1)
+  def part2(masses), do: runner(masses, &fuel_of_fuel_calculator/1)
 
   def runner(masses, calculate_fuel) do
     masses
@@ -42,8 +34,8 @@ defmodule Day1 do
 
   def fuel_of_fuel_calculator(mass) do
     case fuel_of_mass_calculator(mass) do
-      fuel when fuel > 0 -> fuel + fuel_of_fuel_calculator(fuel)
-      _ -> 0
+      fuel when fuel <= 0 -> 0
+      fuel -> fuel + fuel_of_fuel_calculator(fuel)
     end
   end
 end

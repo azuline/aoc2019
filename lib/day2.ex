@@ -17,11 +17,8 @@ defmodule Day2 do
   def execute() do
     program = get_program()
 
-    part1 = Day2.part1(program)
-    IO.puts("Part 1: #{part1}")
-
-    part2 = Day2.part2(program)
-    IO.puts("Part 2: #{part2}")
+    IO.puts("Part 1: #{part1(program)}")
+    IO.puts("Part 2: #{part2(program)}")
   end
 
   def part1(program) do

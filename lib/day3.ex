@@ -23,18 +23,11 @@ defmodule Day3 do
   def execute() do
     specs = get_specs()
 
-    part1 = Day3.part1(specs)
-    IO.puts("Part 1: #{part1}")
-
-    part2 = Day3.part2(specs)
-    IO.puts("Part 2: #{part2}")
+    IO.puts("Part 1: #{part1(specs)}")
+    IO.puts("Part 2: #{part2(specs)}")
   end
 
   def part1(specs) do
-    # Since we only care about {x, y}, and not {x, y, ctr}, we can discard
-    # the second point in the {point1, point2} tuple because they have the
-    # same {x, y}.
-
     specs
     |> generate_points()
     |> find_collisions()
@@ -98,6 +91,9 @@ defmodule Day3 do
 
     find_collisions_in_map(points2, points1_map)
   end
+
+  # Recursively iterate through all the points, checking to see if they exist
+  # in the map. Build and return a list of points in the collisions variable.
 
   def find_collisions_in_map(points, map, collisions \\ [])
 

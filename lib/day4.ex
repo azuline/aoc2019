@@ -15,11 +15,8 @@ defmodule Day4 do
   def execute() do
     [lower, upper] = get_range()
 
-    part1 = Day4.part1(lower, upper)
-    IO.puts("Part 1: #{part1}")
-
-    part2 = Day4.part2(lower, upper)
-    IO.puts("Part 2: #{part2}")
+    IO.puts("Part 1: #{part1(lower, upper)}")
+    IO.puts("Part 2: #{part2(lower, upper)}")
   end
 
   def part1(lower, upper) do
