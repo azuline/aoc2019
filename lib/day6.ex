@@ -24,6 +24,7 @@ defmodule Day6 do
     orbits = get_orbits()
 
     IO.puts("Part 1: #{part1(orbits)}")
+    IO.puts("Part 2: #{part2(orbits)}")
   end
 
   def part1(orbits) do
@@ -31,6 +32,14 @@ defmodule Day6 do
     |> map_parents_to_children()
     |> construct_tree()
     |> count_orbits()
+  end
+
+  def part2(orbits) do
+    orbits
+    |> map_parents_to_children()
+    |> construct_tree()
+    |> calculate_orbital_transfers()
+    |> (&elem(&1, 1)).()
   end
 
   def map_parents_to_children(orbits, map \\ %{})
@@ -58,11 +67,39 @@ defmodule Day6 do
     %SpaceObject{name: object_name, children: children}
   end
 
-  def count_orbits(orbit_tree, depth \\ 1) do
-    for(
-      child <- orbit_tree.children,
-      do: depth + count_orbits(child, depth + 1)
-    )
+  def count_orbits(%{children: children} = _orbit_tree, depth \\ 1) do
+    for(child <- children, do: depth + count_orbits(child, depth + 1))
     |> Enum.sum()
+  end
+
+  def calculate_orbital_transfers(%{name: name, children: []} = _orbit_tree) do
+    if name == "YOU" or name == "SAN", do: {:unconnected, -1}, else: nil
+  end
+
+  def calculate_orbital_transfers(%{children: children} = _orbit_tree) do
+    child_hops =
+      children
+      |> Enum.map(fn child ->
+        case calculate_orbital_transfers(child) do
+          {:connected, _hops} = child_hop -> child_hop
+          {:unconnected, hops} -> {:unconnected, hops + 1}
+          nil -> nil
+        end
+      end)
+      |> Enum.filter(&(&1 != nil))
+
+    case length(child_hops) do
+      0 ->
+        nil
+
+      1 ->
+        Enum.at(child_hops, 0)
+
+      2 ->
+        child_hops
+        |> Enum.map(&elem(&1, 1))
+        |> Enum.sum()
+        |> (&{:connected, &1}).()
+    end
   end
 end

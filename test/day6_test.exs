@@ -35,4 +35,10 @@ defmodule Day6Test do
   test "part 1" do
     assert part1(@orbits) == 42
   end
+
+  test "part 2" do
+    orbits = [["K", "YOU"], ["I", "SAN"] | @orbits]
+
+    assert part2(orbits) == 4
+  end
 end
