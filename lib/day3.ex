@@ -1,4 +1,4 @@
-defmodule Point do
+defmodule Day3.Point do
   defstruct x: 0, y: 0, ctr: 0
 
   def get_dimensions(point), do: {point.x, point.y}
@@ -11,6 +11,8 @@ defmodule Day3 do
 
   $ elixir day3.exs input/day3.txt
   """
+
+  alias Day3.Point
 
   defp get_specs() do
     Path.join(__DIR__, "inputs/day3.txt")

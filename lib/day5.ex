@@ -1,8 +1,10 @@
 defmodule Day5 do
   @moduledoc """
   Advent of Code 2019
-  Day 2: Sunny with a Chance of Asteroids
+  Day 5: Sunny with a Chance of Asteroids
   """
+
+  alias Day5.Opcode
 
   def get_program() do
     Path.join(__DIR__, "inputs/day5.txt")
@@ -112,7 +114,7 @@ defmodule Day5 do
   end
 end
 
-defmodule Opcode do
+defmodule Day5.Opcode do
   @moduledoc """
   I assume opcodes will never be negative.
   """

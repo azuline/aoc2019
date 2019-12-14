@@ -1,4 +1,4 @@
-defmodule SpaceObject do
+defmodule Day6.SpaceObject do
   @moduledoc """
   A recursively defined tree.
   """
@@ -11,6 +11,8 @@ defmodule Day6 do
   Advent of Code 2019
   Day 6: Universal Orbit Map
   """
+
+  alias Day6.SpaceObject
 
   def get_orbits() do
     Path.join(__DIR__, "inputs/day6.txt")
