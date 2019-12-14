@@ -21,96 +21,96 @@ defmodule Day5 do
     IO.puts("Part 2: #{part2(program)}")
   end
 
-  def part1(program), do: run_program(program)
-  def part2(program), do: run_program(program, 0, 0, 5)
+  def part1(program), do: run_program(program, [1])
+  def part2(program), do: run_program(program, [5])
 
-  def run_program(program, position \\ 0, diagnostic_code \\ 0, input \\ 1) do
+  def run_program(program, inputs, position \\ 0, diagnostic_code \\ 0) do
     Opcode.at_position(program, position)
-    |> run_opcode(program, diagnostic_code, input)
+    |> run_opcode(program, inputs, diagnostic_code)
   end
 
-  defp run_opcode(%{code: 99}, _program, diagnostic_code, _input) do
+  defp run_opcode(%{code: 99}, _program, _inputs, diagnostic_code) do
     diagnostic_code
   end
 
-  defp run_opcode(%{code: 4} = opcode, program, _diagnostic_code, _input) do
+  defp run_opcode(%{code: 4} = opcode, program, inputs, _diagnostic_code) do
     diagnostic_code =
       Enum.at(
         program,
         Enum.at(opcode.params, 0)
       )
 
-    run_program(program, opcode.next_position, diagnostic_code)
+    run_program(program, inputs, opcode.next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 1, params: [param1, param2, param3]} = opcode,
          program,
-         diagnostic_code,
-         _input
+         inputs,
+         diagnostic_code
        ) do
     List.replace_at(program, param3, param1 + param2)
-    |> run_program(opcode.next_position, diagnostic_code)
+    |> run_program(inputs, opcode.next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 2, params: [param1, param2, param3]} = opcode,
          program,
-         diagnostic_code,
-         _input
+         inputs,
+         diagnostic_code
        ) do
     List.replace_at(program, param3, param1 * param2)
-    |> run_program(opcode.next_position, diagnostic_code)
+    |> run_program(inputs, opcode.next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 3, params: [param1]} = opcode,
          program,
-         diagnostic_code,
-         input
+         [input | inputs],
+         diagnostic_code
        ) do
     List.replace_at(program, param1, input)
-    |> run_program(opcode.next_position, diagnostic_code)
+    |> run_program(inputs, opcode.next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 5, params: [param1, param2]} = opcode,
          program,
-         diagnostic_code,
-         _input
+         inputs,
+         diagnostic_code
        ) do
     next_position = if param1 != 0, do: param2, else: opcode.next_position
-    run_program(program, next_position, diagnostic_code)
+    run_program(program, inputs, next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 6, params: [param1, param2]} = opcode,
          program,
-         diagnostic_code,
-         _input
+         inputs,
+         diagnostic_code
        ) do
     next_position = if param1 == 0, do: param2, else: opcode.next_position
-    run_program(program, next_position, diagnostic_code)
+    run_program(program, inputs, next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 7, params: [param1, param2, param3]} = opcode,
          program,
-         diagnostic_code,
-         _input
+         inputs,
+         diagnostic_code
        ) do
     List.replace_at(program, param3, if(param1 < param2, do: 1, else: 0))
-    |> run_program(opcode.next_position, diagnostic_code)
+    |> run_program(inputs, opcode.next_position, diagnostic_code)
   end
 
   defp run_opcode(
          %{code: 8, params: [param1, param2, param3]} = opcode,
          program,
-         diagnostic_code,
-         _input
+         inputs,
+         diagnostic_code
        ) do
     List.replace_at(program, param3, if(param1 == param2, do: 1, else: 0))
-    |> run_program(opcode.next_position, diagnostic_code)
+    |> run_program(inputs, opcode.next_position, diagnostic_code)
   end
 end
 

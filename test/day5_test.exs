@@ -62,10 +62,10 @@ defmodule Day5Test do
   ]
 
   test "part 2 input 8" do
-    assert run_program(@example_program, 0, 0, 8) == 1000
+    assert run_program(@example_program, [8]) == 1000
   end
 
   test "part 2 input 9" do
-    assert run_program(@example_program, 0, 0, 9) == 1001
+    assert run_program(@example_program, [9]) == 1001
   end
 end
