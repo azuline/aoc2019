@@ -2,6 +2,7 @@ defmodule Day5Test do
   use ExUnit.Case, async: true
 
   import Day5
+  import IntCode, only: [run_computer: 2]
 
   test "part 1" do
     assert part1(get_program()) == 11_193_703
@@ -62,10 +63,12 @@ defmodule Day5Test do
   ]
 
   test "part 2 input 8" do
-    assert run_program(@example_program, [8]) == 1000
+    GenServer.start_link(IntCode, @example_program, name: Test)
+    assert run_computer(Test, [8]) == 1000
   end
 
   test "part 2 input 9" do
-    assert run_program(@example_program, [9]) == 1001
+    GenServer.start_link(IntCode, @example_program, name: Test)
+    assert run_computer(Test, [9]) == 1001
   end
 end

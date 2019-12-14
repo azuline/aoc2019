@@ -4,7 +4,8 @@ defmodule Day7 do
   Day 7: Amplification Circuit
   """
 
-  import Day5, only: [run_program: 2]
+  alias Day7.Combinatorics
+  import IntCode, only: [run_computer: 2]
 
   def get_program() do
     Path.join(__DIR__, "inputs/day7.txt")
@@ -18,31 +19,89 @@ defmodule Day7 do
     program = get_program()
 
     IO.puts("Part 1: #{part1(program)}")
+    IO.puts("Part 2: #{part2(program)}")
   end
 
   def part1(program) do
-    get_permutations([0, 1, 2, 3, 4])
-    |> Enum.map(fn [a, b, c, d, e] ->
-      run_program(program, [a, 0])
-      |> (&run_program(program, [b, &1])).()
-      |> (&run_program(program, [c, &1])).()
-      |> (&run_program(program, [d, &1])).()
-      |> (&run_program(program, [e, &1])).()
-      |> (&{"#{a}#{b}#{c}#{d}#{e}", &1}).()
-    end)
+    Combinatorics.get_permutations([0, 1, 2, 3, 4])
+    |> Enum.map(&{&1, run_series(program, &1)})
     |> Enum.max_by(&elem(&1, 1))
-    |> (&"Max thruster signal #{elem(&1, 1)} from sequence #{elem(&1, 0)}").()
+    |> format_result()
   end
+
+  def part2(program) do
+    Combinatorics.get_permutations([5, 6, 7, 8, 9])
+    |> Enum.map(&{&1, run_feedback_loop(program, &1)})
+    |> Enum.max_by(&elem(&1, 1))
+    |> format_result()
+  end
+
+  def run_series(program, sequence) do
+    start_computers(program)
+
+    output =
+      run_computer(:Computer0, [Enum.at(sequence, 0), 0])
+      |> (&run_computer(:Computer1, [Enum.at(sequence, 1), &1])).()
+      |> (&run_computer(:Computer2, [Enum.at(sequence, 2), &1])).()
+      |> (&run_computer(:Computer3, [Enum.at(sequence, 3), &1])).()
+      |> (&run_computer(:Computer4, [Enum.at(sequence, 4), &1])).()
+
+    stop_computers()
+    output
+  end
+
+  def run_feedback_loop(program, sequence) do
+    start_computers(program)
+
+    output =
+      initialize_computers(sequence)
+      |> (&run_circuit_loop(program, &1)).()
+
+    stop_computers()
+    output
+  end
+
+  defp initialize_computers(sequence) do
+    sequence
+    |> Enum.with_index()
+    |> Enum.reduce(0, fn {setting, i}, input ->
+      GenServer.call(String.to_atom("Computer#{i}"), {:run, [setting, input]})
+      |> (&elem(&1, 1)).()
+    end)
+  end
+
+  defp run_circuit_loop(program, input) do
+    output =
+      GenServer.call(:Computer0, {:run, [input]})
+      |> (&GenServer.call(:Computer1, {:run, [elem(&1, 1)]})).()
+      |> (&GenServer.call(:Computer2, {:run, [elem(&1, 1)]})).()
+      |> (&GenServer.call(:Computer3, {:run, [elem(&1, 1)]})).()
+      |> (&GenServer.call(:Computer4, {:run, [elem(&1, 1)]})).()
+
+    case output do
+      {:output, code} -> run_circuit_loop(program, code)
+      {:exit, code} -> code
+    end
+  end
+
+  def format_result({[a, b, c, d, e], signal}) do
+    "Max thruster signal #{signal} from sequence #{a}#{b}#{c}#{d}#{e}"
+  end
+
+  defp start_computers(program) do
+    for i <- 0..4,
+        do: GenServer.start_link(IntCode, program, name: String.to_atom("Computer#{i}"))
+  end
+
+  defp stop_computers() do
+    for i <- 0..4, do: GenServer.stop(String.to_atom("Computer#{i}"))
+  end
+end
+
+defmodule Day7.Combinatorics do
+  def get_permutations([]), do: [[]]
 
   def get_permutations(elements) do
-    get_permutations(elements, length(elements))
-  end
-
-  def get_permutations(_elements, 0 = _ctr) do
-    [[]]
-  end
-
-  def get_permutations(elements, ctr) do
-    for e <- elements, body <- get_permutations(elements -- [e], ctr - 1), do: [e | body]
+    for(e <- elements, body <- get_permutations(elements -- [e]), do: [e | body])
   end
 end
