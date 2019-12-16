@@ -1,7 +1,7 @@
-defmodule Day2Test do
+defmodule Day02Test do
   use ExUnit.Case, async: true
 
-  import Day2
+  import Day02
 
   test "part 1" do
     assert 3_166_704 == get_program() |> part1()

@@ -1,7 +1,7 @@
-defmodule Day5Test do
+defmodule Day05Test do
   use ExUnit.Case, async: true
 
-  import Day5
+  import Day05
   import IntCode, only: [run_computer: 2]
 
   test "part 1" do

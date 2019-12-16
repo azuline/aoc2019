@@ -1,7 +1,7 @@
-defmodule Day8Test do
+defmodule Day08Test do
   use ExUnit.Case, async: true
 
-  import Day8
+  import Day08
 
   @part2_letters Enum.join(
                    [

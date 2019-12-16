@@ -1,14 +1,14 @@
-defmodule Day7 do
+defmodule Day07 do
   @moduledoc """
   Advent of Code 2019
   Day 7: Amplification Circuit
   """
 
-  alias Day7.Combinatorics
+  alias Day07.Combinatorics
   import IntCode, only: [run_computer: 2]
 
   def get_program() do
-    Path.join(__DIR__, "inputs/day7.txt")
+    Path.join(__DIR__, "inputs/day07.txt")
     |> File.read!()
     |> String.trim()
     |> String.split(",")
@@ -98,7 +98,7 @@ defmodule Day7 do
   end
 end
 
-defmodule Day7.Combinatorics do
+defmodule Day07.Combinatorics do
   def get_permutations([]), do: [[]]
 
   def get_permutations(elements) do

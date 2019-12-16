@@ -1,4 +1,4 @@
-defmodule Day2 do
+defmodule Day02 do
   @moduledoc """
   Advent of Code 2019
   Day 2: 1202 Program Alarm
@@ -7,7 +7,7 @@ defmodule Day2 do
   @part2_target 19_690_720
 
   def get_program() do
-    Path.join(__DIR__, "inputs/day2.txt")
+    Path.join(__DIR__, "inputs/day02.txt")
     |> File.read!()
     |> String.trim()
     |> String.split(",")

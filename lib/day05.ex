@@ -1,4 +1,4 @@
-defmodule Day5 do
+defmodule Day05 do
   @moduledoc """
   Advent of Code 2019
   Day 5: Sunny with a Chance of Asteroids
@@ -7,7 +7,7 @@ defmodule Day5 do
   import IntCode, only: [run_computer: 2]
 
   def get_program() do
-    Path.join(__DIR__, "inputs/day5.txt")
+    Path.join(__DIR__, "inputs/day05.txt")
     |> File.read!()
     |> String.trim()
     |> String.split(",")

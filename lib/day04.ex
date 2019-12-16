@@ -1,11 +1,11 @@
-defmodule Day4 do
+defmodule Day04 do
   @moduledoc """
   Advent of Code 2019
   Day 4: Secure Container
   """
 
   def get_range() do
-    Path.join(__DIR__, "inputs/day4.txt")
+    Path.join(__DIR__, "inputs/day04.txt")
     |> File.read!()
     |> String.trim()
     |> String.split("-")

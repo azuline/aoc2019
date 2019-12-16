@@ -1,7 +1,7 @@
-defmodule Day9Test do
+defmodule Day09Test do
   use ExUnit.Case, async: true
 
-  import Day9
+  import Day09
   import IntCode, only: [run_computer: 1]
 
   def get_all_diagnostic_codes(name, codes \\ [], inputs \\ []) do

@@ -1,7 +1,7 @@
-defmodule Day1Test do
+defmodule Day01Test do
   use ExUnit.Case, async: true
 
-  import Day1
+  import Day01
 
   test "part 1" do
     assert 3_360_301 == get_masses() |> part1()

@@ -1,4 +1,4 @@
-defmodule Day6.SpaceObject do
+defmodule Day06.SpaceObject do
   @moduledoc """
   A recursively defined tree.
   """
@@ -6,16 +6,16 @@ defmodule Day6.SpaceObject do
   defstruct [:name, :children]
 end
 
-defmodule Day6 do
+defmodule Day06 do
   @moduledoc """
   Advent of Code 2019
   Day 6: Universal Orbit Map
   """
 
-  alias Day6.SpaceObject
+  alias Day06.SpaceObject
 
   def get_orbits() do
-    Path.join(__DIR__, "inputs/day6.txt")
+    Path.join(__DIR__, "inputs/day06.txt")
     |> File.open!()
     |> IO.stream(:line)
     |> Stream.map(&String.trim/1)

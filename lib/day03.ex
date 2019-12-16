@@ -1,10 +1,10 @@
-defmodule Day3.Point do
+defmodule Day03.Point do
   defstruct x: 0, y: 0, ctr: 0
 
   def get_dimensions(point), do: {point.x, point.y}
 end
 
-defmodule Day3 do
+defmodule Day03 do
   @moduledoc """
   Advent of Code 2019
   Day 3: Crossed Wires
@@ -12,10 +12,10 @@ defmodule Day3 do
   $ elixir day3.exs input/day3.txt
   """
 
-  alias Day3.Point
+  alias Day03.Point
 
   def get_specs() do
-    Path.join(__DIR__, "inputs/day3.txt")
+    Path.join(__DIR__, "inputs/day03.txt")
     |> File.open!()
     |> IO.stream(:line)
     |> Stream.map(&String.trim/1)

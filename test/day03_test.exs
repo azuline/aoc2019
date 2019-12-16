@@ -1,7 +1,7 @@
-defmodule Day3Test do
+defmodule Day03Test do
   use ExUnit.Case, async: true
 
-  import Day3
+  import Day03
 
   @test_spec [
     ["R75", "D30", "R83", "U83", "L12", "D49", "R71", "U7", "L72"],

@@ -1,7 +1,7 @@
-defmodule Day4Test do
+defmodule Day04Test do
   use ExUnit.Case, async: true
 
-  import Day4
+  import Day04
 
   test "part 1" do
     [lower, upper] = get_range()

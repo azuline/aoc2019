@@ -1,8 +1,8 @@
-defmodule Day7Test do
+defmodule Day07Test do
   use ExUnit.Case, async: true
 
-  import Day7
-  import Day7.Combinatorics
+  import Day07
+  import Day07.Combinatorics
 
   test "part 1" do
     assert "Max thruster signal 273814 from sequence 20431" == get_program() |> part1()

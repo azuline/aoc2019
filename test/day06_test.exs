@@ -1,7 +1,7 @@
-defmodule Day6Test do
+defmodule Day06Test do
   use ExUnit.Case, async: true
 
-  import Day6
+  import Day06
 
   test "part 1" do
     assert 162_816 == get_orbits() |> part1()

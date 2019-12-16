@@ -1,10 +1,10 @@
-defmodule Day8 do
+defmodule Day08 do
   @moduledoc """
   Advent of Code 2019
   Day 8: Space Image Format
   """
   def get_image() do
-    Path.join(__DIR__, "inputs/day8.txt")
+    Path.join(__DIR__, "inputs/day08.txt")
     |> File.read!()
     |> String.trim()
     |> String.graphemes()

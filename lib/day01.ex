@@ -1,11 +1,11 @@
-defmodule Day1 do
+defmodule Day01 do
   @moduledoc """
   Advent of Code 2019
   Day 1: The Tyranny of the Rocket Equation
   """
 
   def get_masses() do
-    Path.join(__DIR__, "inputs/day1.txt")
+    Path.join(__DIR__, "inputs/day01.txt")
     |> File.open!()
     |> IO.stream(:line)
     |> Stream.map(&String.trim/1)
