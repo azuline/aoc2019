@@ -3,7 +3,15 @@ defmodule Day6Test do
 
   import Day6
 
-  @orbits [
+  test "part 1" do
+    assert 162_816 == get_orbits() |> part1()
+  end
+
+  test "part 2" do
+    assert 304 == get_orbits() |> part2()
+  end
+
+  @test_orbits [
     ["COM", "B"],
     ["B", "C"],
     ["C", "D"],
@@ -29,15 +37,15 @@ defmodule Day6Test do
       "K" => ["L"]
     }
 
-    assert map_parents_to_children(@orbits) == map
+    assert map_parents_to_children(@test_orbits) == map
   end
 
-  test "part 1" do
-    assert part1(@orbits) == 42
+  test "part 1 test orbits" do
+    assert part1(@test_orbits) == 42
   end
 
-  test "part 2" do
-    orbits = [["K", "YOU"], ["I", "SAN"] | @orbits]
+  test "part 2 test orbits" do
+    orbits = [["K", "YOU"], ["I", "SAN"] | @test_orbits]
 
     assert part2(orbits) == 4
   end

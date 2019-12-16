@@ -14,7 +14,7 @@ defmodule Day3 do
 
   alias Day3.Point
 
-  defp get_specs() do
+  def get_specs() do
     Path.join(__DIR__, "inputs/day3.txt")
     |> File.open!()
     |> IO.stream(:line)

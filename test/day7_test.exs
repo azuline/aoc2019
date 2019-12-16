@@ -4,6 +4,14 @@ defmodule Day7Test do
   import Day7
   import Day7.Combinatorics
 
+  test "part 1" do
+    assert "Max thruster signal 273814 from sequence 20431" == get_program() |> part1()
+  end
+
+  test "part 2" do
+    assert "Max thruster signal 34579864 from sequence 65978" == get_program() |> part2()
+  end
+
   test "get permutations" do
     permutations =
       get_permutations([1, 2, 3])

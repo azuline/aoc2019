@@ -13,7 +13,8 @@ defmodule Opcode do
     5 => 2,
     6 => 2,
     7 => 3,
-    8 => 3
+    8 => 3,
+    9 => 1
   }
 
   # These are indices of parameters that are for writing--that is, they should
@@ -24,17 +25,18 @@ defmodule Opcode do
     1 => [2],
     2 => [2],
     3 => [0],
-    4 => [0],
+    4 => [],
     5 => [],
     6 => [],
     7 => [2],
-    8 => [2]
+    8 => [2],
+    9 => []
   }
 
-  def at_position(program, position) do
+  def at_position(program, position, relative_base) do
     Enum.at(program, position)
     |> split_code_and_modes()
-    |> construct(program, position)
+    |> construct(program, position, relative_base)
   end
 
   defp split_code_and_modes(opcode) do
@@ -42,19 +44,30 @@ defmodule Opcode do
   end
 
   # Handle the exit code case explicitly.
-  defp construct({99, _modes}, _program, _position) do
+  defp construct({99, _modes}, _program, _position, _relative_base) do
     %__MODULE__{code: 99}
   end
 
-  defp construct({code, modes}, program, position) do
+  defp construct({code, modes}, program, position, relative_base) do
     params =
       try do
         for i <- 1..@num_params[code] do
           value = Enum.at(program, position + i)
 
-          if parse_mode(modes, i - 1) == 0 and (i - 1) not in @write_indices[code],
-            do: Enum.at(program, value),
-            else: value
+          case parse_mode(modes, i - 1) do
+            0 ->
+              if (i - 1) not in @write_indices[code],
+                do: Enum.at(program, value, 0),
+                else: value
+
+            1 ->
+              value
+
+            2 ->
+              if (i - 1) not in @write_indices[code],
+                do: Enum.at(program, relative_base + value, 0),
+                else: relative_base + value
+          end
         end
       rescue
         ArgumentError ->

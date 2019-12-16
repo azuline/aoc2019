@@ -3,6 +3,18 @@ defmodule Day4Test do
 
   import Day4
 
+  test "part 1" do
+    [lower, upper] = get_range()
+
+    assert 1665 == part1(lower, upper)
+  end
+
+  test "part 2" do
+    [lower, upper] = get_range()
+
+    assert 1131 == part2(lower, upper)
+  end
+
   test "valid password part 1 test 1" do
     assert valid_password?(111_111, &adjacent?/2)
   end

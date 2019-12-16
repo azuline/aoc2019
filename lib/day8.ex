@@ -32,9 +32,13 @@ defmodule Day8 do
       Enum.zip([chunk, image])
       |> Enum.map(fn {c, i} -> if i == 2, do: c, else: i end)
     end)
-    |> Enum.map(&Integer.to_string/1)
-    |> Enum.map(&if &1 == "0", do: "  ", else: "\u2591\u2591")
-    |> Enum.chunk_every(25)
+    |> Enum.map(&if &1 == 0, do: "  ", else: "\u2591\u2591")
+    |> break_into_lines(25)
+  end
+
+  defp break_into_lines(image, line_width) do
+    image
+    |> Enum.chunk_every(line_width)
     |> Enum.map(&Enum.join/1)
     |> Enum.join("\n")
   end

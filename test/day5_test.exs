@@ -5,11 +5,11 @@ defmodule Day5Test do
   import IntCode, only: [run_computer: 2]
 
   test "part 1" do
-    assert part1(get_program()) == 11_193_703
+    assert 11_193_703 == get_program() |> part1()
   end
 
   test "part 2" do
-    assert part2(get_program()) == 12_410_607
+    assert 12_410_607 == get_program() |> part2()
   end
 
   @example_program [

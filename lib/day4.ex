@@ -4,7 +4,7 @@ defmodule Day4 do
   Day 4: Secure Container
   """
 
-  defp get_range() do
+  def get_range() do
     Path.join(__DIR__, "inputs/day4.txt")
     |> File.read!()
     |> String.trim()
