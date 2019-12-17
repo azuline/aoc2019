@@ -1,7 +1,7 @@
 defmodule Day09 do
   @moduledoc """
   Advent of Code 2019
-  Day 7: Sensor Boost
+  Day 9: Sensor Boost
   """
 
   import IntCode, only: [run_computer: 2, run_computer: 3]
