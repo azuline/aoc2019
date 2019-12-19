@@ -12,7 +12,7 @@ defmodule Day03 do
   $ elixir day3.exs input/day3.txt
   """
 
-  alias Day03.Point
+  alias Day03.{Part1, Part2}
 
   def get_specs() do
     Path.join(__DIR__, "inputs/day03.txt")
@@ -25,11 +25,15 @@ defmodule Day03 do
   def execute() do
     specs = get_specs()
 
-    IO.puts("Part 1: #{part1(specs)}")
-    IO.puts("Part 2: #{part2(specs)}")
+    IO.puts("Part 1: #{Part1.run(specs)}")
+    IO.puts("Part 2: #{Part2.run(specs)}")
   end
+end
 
-  def part1(specs) do
+defmodule Day03.Part1 do
+  alias Day03.Point
+
+  def run(specs) do
     specs
     |> generate_points()
     |> find_collisions()
@@ -38,19 +42,20 @@ defmodule Day03 do
     |> (&(abs(&1.x) + abs(&1.y))).()
   end
 
-  def part2(specs) do
-    specs
-    |> generate_points()
-    |> find_collisions()
-    |> Enum.min_by(&(elem(&1, 0).ctr + elem(&1, 1).ctr))
-    |> (&(elem(&1, 0).ctr + elem(&1, 1).ctr)).()
-  end
-
-  defp generate_points(specs) do
+  def generate_points(specs) do
     {
       generate_points_from_spec(Enum.at(specs, 0)),
       generate_points_from_spec(Enum.at(specs, 1))
     }
+  end
+
+  def find_collisions({points1, points2}) do
+    points1_map =
+      for point <- points1,
+          into: %{},
+          do: {Point.get_dimensions(point), point}
+
+    find_collisions_in_map(points2, points1_map)
   end
 
   defp generate_points_from_spec(spec, points \\ [], cur \\ %Point{})
@@ -85,25 +90,16 @@ defmodule Day03 do
     end
   end
 
-  def find_collisions({points1, points2}) do
-    points1_map =
-      for point <- points1,
-          into: %{},
-          do: {Point.get_dimensions(point), point}
-
-    find_collisions_in_map(points2, points1_map)
-  end
-
   # Recursively iterate through all the points, checking to see if they exist
   # in the map. Build and return a list of points in the collisions variable.
 
-  def find_collisions_in_map(points, map, collisions \\ [])
+  defp find_collisions_in_map(points, map, collisions \\ [])
 
-  def find_collisions_in_map([], _map, collisions) do
+  defp find_collisions_in_map([], _map, collisions) do
     collisions
   end
 
-  def find_collisions_in_map([point | points], map, collisions) do
+  defp find_collisions_in_map([point | points], map, collisions) do
     key = Point.get_dimensions(point)
 
     collisions =
@@ -112,5 +108,17 @@ defmodule Day03 do
         else: collisions
 
     find_collisions_in_map(points, map, collisions)
+  end
+end
+
+defmodule Day03.Part2 do
+  alias Day03.Part1
+
+  def run(specs) do
+    specs
+    |> Part1.generate_points()
+    |> Part1.find_collisions()
+    |> Enum.min_by(&(elem(&1, 0).ctr + elem(&1, 1).ctr))
+    |> (&(elem(&1, 0).ctr + elem(&1, 1).ctr)).()
   end
 end

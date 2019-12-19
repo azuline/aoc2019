@@ -4,6 +4,8 @@ defmodule Day11 do
   Day 11: Space Police
   """
 
+  alias Day11.{Part1, Part2}
+
   def get_program() do
     Path.join(__DIR__, "inputs/day11.txt")
     |> File.read!()
@@ -15,22 +17,17 @@ defmodule Day11 do
   def execute() do
     program = get_program()
 
-    IO.puts("Part 1: #{part1(program)}")
-    IO.puts("Part 2:\n#{part2(program)}")
+    IO.puts("Part 1: #{Part1.run(program)}")
+    IO.puts("Part 2:\n#{Part2.run(program)}")
   end
+end
 
-  def part1(program) do
+defmodule Day11.Part1 do
+  def run(program) do
     GenServer.start_link(IntCode, program, name: Computer)
     panels = run_painting_robot()
     GenServer.stop(Computer)
     map_size(panels)
-  end
-
-  def part2(program) do
-    GenServer.start_link(IntCode, program, name: Computer)
-    panels = run_painting_robot(%{{0, 0} => 1})
-    GenServer.stop(Computer)
-    format_panels(panels)
   end
 
   # black = 0, white = 1
@@ -64,6 +61,17 @@ defmodule Day11 do
 
         run_painting_robot(panels, coords, direction)
     end
+  end
+end
+
+defmodule Day11.Part2 do
+  alias Day11.Part1
+
+  def run(program) do
+    GenServer.start_link(IntCode, program, name: Computer)
+    panels = Part1.run_painting_robot(%{{0, 0} => 1})
+    GenServer.stop(Computer)
+    format_panels(panels)
   end
 
   def format_panels(panels) do

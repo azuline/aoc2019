@@ -2,6 +2,7 @@ defmodule Day03Test do
   use ExUnit.Case, async: true
 
   import Day03
+  alias Day03.{Part1, Part2}
 
   @test_spec [
     ["R75", "D30", "R83", "U83", "L12", "D49", "R71", "U7", "L72"],
@@ -9,18 +10,18 @@ defmodule Day03Test do
   ]
 
   test "part 1" do
-    assert 1211 == get_specs() |> part1()
+    assert 1211 == get_specs() |> Part1.run()
   end
 
   test "part 2" do
-    assert 101_386 == get_specs() |> part2()
+    assert 101_386 == get_specs() |> Part2.run()
   end
 
   test "part 1 test spec" do
-    assert part1(@test_spec) == 159
+    assert Part1.run(@test_spec) == 159
   end
 
   test "part 2 test spec" do
-    assert part2(@test_spec) == 610
+    assert Part2.run(@test_spec) == 610
   end
 end

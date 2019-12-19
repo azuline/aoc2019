@@ -3,13 +3,14 @@ defmodule Day05Test do
 
   import Day05
   import IntCode, only: [run_computer: 2]
+  alias Day05.{Part1, Part2}
 
   test "part 1" do
-    assert 11_193_703 == get_program() |> part1()
+    assert 11_193_703 == get_program() |> Part1.run()
   end
 
   test "part 2" do
-    assert 12_410_607 == get_program() |> part2()
+    assert 12_410_607 == get_program() |> Part2.run()
   end
 
   @example_program [

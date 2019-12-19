@@ -4,8 +4,7 @@ defmodule Day07 do
   Day 7: Amplification Circuit
   """
 
-  alias Day07.Combinatorics
-  import IntCode, only: [run_computer: 2]
+  alias Day07.{Part1, Part2}
 
   def get_program() do
     Path.join(__DIR__, "inputs/day07.txt")
@@ -18,20 +17,18 @@ defmodule Day07 do
   def execute() do
     program = get_program()
 
-    IO.puts("Part 1: #{part1(program)}")
-    IO.puts("Part 2: #{part2(program)}")
+    IO.puts("Part 1: #{Part1.run(program)}")
+    IO.puts("Part 2: #{Part2.run(program)}")
   end
+end
 
-  def part1(program) do
+defmodule Day07.Part1 do
+  alias Day07.Combinatorics
+  import IntCode, only: [run_computer: 2]
+
+  def run(program) do
     Combinatorics.get_permutations([0, 1, 2, 3, 4])
     |> Enum.map(&{&1, run_series(program, &1)})
-    |> Enum.max_by(&elem(&1, 1))
-    |> format_result()
-  end
-
-  def part2(program) do
-    Combinatorics.get_permutations([5, 6, 7, 8, 9])
-    |> Enum.map(&{&1, run_feedback_loop(program, &1)})
     |> Enum.max_by(&elem(&1, 1))
     |> format_result()
   end
@@ -50,14 +47,38 @@ defmodule Day07 do
     output
   end
 
+  def format_result({[a, b, c, d, e], signal}) do
+    "Max thruster signal #{signal} from sequence #{a}#{b}#{c}#{d}#{e}"
+  end
+
+  def start_computers(program) do
+    for i <- 0..4,
+        do: GenServer.start_link(IntCode, program, name: String.to_atom("Computer#{i}"))
+  end
+
+  def stop_computers() do
+    for i <- 0..4, do: GenServer.stop(String.to_atom("Computer#{i}"))
+  end
+end
+
+defmodule Day07.Part2 do
+  alias Day07.{Part1, Combinatorics}
+
+  def run(program) do
+    Combinatorics.get_permutations([5, 6, 7, 8, 9])
+    |> Enum.map(&{&1, run_feedback_loop(program, &1)})
+    |> Enum.max_by(&elem(&1, 1))
+    |> Part1.format_result()
+  end
+
   def run_feedback_loop(program, sequence) do
-    start_computers(program)
+    Part1.start_computers(program)
 
     output =
       initialize_computers(sequence)
       |> (&run_circuit_loop(program, &1)).()
 
-    stop_computers()
+    Part1.stop_computers()
     output
   end
 
@@ -82,19 +103,6 @@ defmodule Day07 do
       {:output, code} -> run_circuit_loop(program, code)
       {:exit, code} -> code
     end
-  end
-
-  def format_result({[a, b, c, d, e], signal}) do
-    "Max thruster signal #{signal} from sequence #{a}#{b}#{c}#{d}#{e}"
-  end
-
-  defp start_computers(program) do
-    for i <- 0..4,
-        do: GenServer.start_link(IntCode, program, name: String.to_atom("Computer#{i}"))
-  end
-
-  defp stop_computers() do
-    for i <- 0..4, do: GenServer.stop(String.to_atom("Computer#{i}"))
   end
 end
 

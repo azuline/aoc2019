@@ -4,6 +4,8 @@ defmodule Day04 do
   Day 4: Secure Container
   """
 
+  alias Day04.{Part1, Part2}
+
   def get_range() do
     Path.join(__DIR__, "inputs/day04.txt")
     |> File.read!()
@@ -15,16 +17,14 @@ defmodule Day04 do
   def execute() do
     [lower, upper] = get_range()
 
-    IO.puts("Part 1: #{part1(lower, upper)}")
-    IO.puts("Part 2: #{part2(lower, upper)}")
+    IO.puts("Part 1: #{Part1.run(lower, upper)}")
+    IO.puts("Part 2: #{Part2.run(lower, upper)}")
   end
+end
 
-  def part1(lower, upper) do
+defmodule Day04.Part1 do
+  def run(lower, upper) do
     calculate_number_of_valid_passwords(lower, upper)
-  end
-
-  def part2(lower, upper) do
-    calculate_number_of_valid_passwords(lower, upper, &exactly_2_adjacent?/2)
   end
 
   # Recursively iterate through all numbers between the lower and upper bounds.
@@ -32,19 +32,19 @@ defmodule Day04 do
   # incremented until it equals the upper bound. For each password, check if
   # it's valid, and increment a counter based on the result.
 
-  defp calculate_number_of_valid_passwords(
-         password,
-         upper_bound,
-         adjacency_check \\ &adjacent?/2,
-         num_valid \\ 0
-       )
+  def calculate_number_of_valid_passwords(
+        password,
+        upper_bound,
+        adjacency_check \\ &adjacent?/2,
+        num_valid \\ 0
+      )
 
-  defp calculate_number_of_valid_passwords(password, upper_bound, _adjacency_check, num_valid)
-       when password == upper_bound do
+  def calculate_number_of_valid_passwords(password, upper_bound, _adjacency_check, num_valid)
+      when password == upper_bound do
     num_valid
   end
 
-  defp calculate_number_of_valid_passwords(password, upper_bound, adjacency_check, num_valid) do
+  def calculate_number_of_valid_passwords(password, upper_bound, adjacency_check, num_valid) do
     calculate_number_of_valid_passwords(
       password + 1,
       upper_bound,
@@ -110,6 +110,24 @@ defmodule Day04 do
     Enum.at(digits, index) == Enum.at(digits, index - 1)
   end
 
+  # Split a password into a list of its digits.
+
+  defp split_password(password) when password < 10 do
+    [password]
+  end
+
+  defp split_password(password) do
+    split_password(div(password, 10)) ++ [rem(password, 10)]
+  end
+end
+
+defmodule Day04.Part2 do
+  alias Day04.Part1
+
+  def run(lower, upper) do
+    Part1.calculate_number_of_valid_passwords(lower, upper, &exactly_2_adjacent?/2)
+  end
+
   # Part 2: Check to see if the digit prior to the current digit and the
   # current digit are equivalent, and ensure that they are not part of a larger
   # group of matching digits.
@@ -124,15 +142,5 @@ defmodule Day04 do
     cur_digit == Enum.at(digits, index - 1) and
       cur_digit != Enum.at(digits, index + 1) and
       cur_digit != Enum.at(digits, index - 2)
-  end
-
-  # Split a password into a list of its digits.
-
-  defp split_password(password) when password < 10 do
-    [password]
-  end
-
-  defp split_password(password) do
-    split_password(div(password, 10)) ++ [rem(password, 10)]
   end
 end

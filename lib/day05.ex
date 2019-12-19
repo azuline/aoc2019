@@ -4,7 +4,7 @@ defmodule Day05 do
   Day 5: Sunny with a Chance of Asteroids
   """
 
-  import IntCode, only: [run_computer: 2]
+  alias Day05.{Part1, Part2}
 
   def get_program() do
     Path.join(__DIR__, "inputs/day05.txt")
@@ -17,18 +17,26 @@ defmodule Day05 do
   def execute() do
     program = get_program()
 
-    IO.puts("Part 1: #{part1(program)}")
-    IO.puts("Part 2: #{part2(program)}")
+    IO.puts("Part 1: #{Part1.run(program)}")
+    IO.puts("Part 2: #{Part2.run(program)}")
   end
+end
 
-  def part1(program) do
+defmodule Day05.Part1 do
+  import IntCode, only: [run_computer: 2]
+
+  def run(program) do
     GenServer.start_link(IntCode, program, name: Computer)
     output = run_computer(Computer, [1])
     GenServer.stop(Computer)
     output
   end
+end
 
-  def part2(program) do
+defmodule Day05.Part2 do
+  import IntCode, only: [run_computer: 2]
+
+  def run(program) do
     GenServer.start_link(IntCode, program, name: Computer)
     output = run_computer(Computer, [5])
     GenServer.stop(Computer)

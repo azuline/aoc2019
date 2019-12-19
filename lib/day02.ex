@@ -4,7 +4,7 @@ defmodule Day02 do
   Day 2: 1202 Program Alarm
   """
 
-  @part2_target 19_690_720
+  alias Day02.{Part1, Part2}
 
   def get_program() do
     Path.join(__DIR__, "inputs/day02.txt")
@@ -17,29 +17,17 @@ defmodule Day02 do
   def execute() do
     program = get_program()
 
-    IO.puts("Part 1: #{part1(program)}")
-    IO.puts("Part 2: #{part2(program)}")
+    IO.puts("Part 1: #{Part1.run(program)}")
+    IO.puts("Part 2: #{Part2.run(program)}")
   end
+end
 
-  def part1(program) do
+defmodule Day02.Part1 do
+  def run(program) do
     program
     |> restore_state()
     |> run_program()
     |> List.first()
-  end
-
-  def part2(program) do
-    for(noun <- 0..100, verb <- 0..100, do: {noun, verb})
-    |> Enum.find(nil, &valid_noun_verb?(program, &1))
-    |> (fn {noun, verb} -> 100 * noun + verb end).()
-  end
-
-  def valid_noun_verb?(program, {noun, verb}) do
-    program
-    |> restore_state(noun, verb)
-    |> run_program()
-    |> List.first()
-    |> (&(&1 == @part2_target)).()
   end
 
   def restore_state(program, noun \\ 12, verb \\ 2) do
@@ -79,5 +67,25 @@ defmodule Day02 do
     program
     |> Enum.at(position)
     |> (&Enum.at(program, &1)).()
+  end
+end
+
+defmodule Day02.Part2 do
+  alias Day02.Part1
+
+  @target 19_690_720
+
+  def run(program) do
+    for(noun <- 0..100, verb <- 0..100, do: {noun, verb})
+    |> Enum.find(nil, &valid_noun_verb?(program, &1))
+    |> (fn {noun, verb} -> 100 * noun + verb end).()
+  end
+
+  def valid_noun_verb?(program, {noun, verb}) do
+    program
+    |> Part1.restore_state(noun, verb)
+    |> Part1.run_program()
+    |> List.first()
+    |> (&(&1 == @target)).()
   end
 end

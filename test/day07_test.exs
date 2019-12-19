@@ -2,19 +2,19 @@ defmodule Day07Test do
   use ExUnit.Case, async: true
 
   import Day07
-  import Day07.Combinatorics
+  alias Day07.{Part1, Part2, Combinatorics}
 
   test "part 1" do
-    assert "Max thruster signal 273814 from sequence 20431" == get_program() |> part1()
+    assert "Max thruster signal 273814 from sequence 20431" == get_program() |> Part1.run()
   end
 
   test "part 2" do
-    assert "Max thruster signal 34579864 from sequence 65978" == get_program() |> part2()
+    assert "Max thruster signal 34579864 from sequence 65978" == get_program() |> Part2.run()
   end
 
   test "get permutations" do
     permutations =
-      get_permutations([1, 2, 3])
+      Combinatorics.get_permutations([1, 2, 3])
       |> Enum.sort()
 
     expected = [
@@ -32,7 +32,7 @@ defmodule Day07Test do
   test "part 1 max thruster 1" do
     program = [3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0]
 
-    assert part1(program) == "Max thruster signal 43210 from sequence 43210"
+    assert Part1.run(program) == "Max thruster signal 43210 from sequence 43210"
   end
 
   test "part 1 max thruster 2" do
@@ -64,7 +64,7 @@ defmodule Day07Test do
       0
     ]
 
-    assert part1(program) == "Max thruster signal 54321 from sequence 01234"
+    assert Part1.run(program) == "Max thruster signal 54321 from sequence 01234"
   end
 
   test "part 2 feedback loop 1" do
@@ -100,7 +100,7 @@ defmodule Day07Test do
       5
     ]
 
-    assert part2(program) == "Max thruster signal 139629729 from sequence 98765"
+    assert Part2.run(program) == "Max thruster signal 139629729 from sequence 98765"
   end
 
   test "part 2 feedback loop 2" do
@@ -164,6 +164,6 @@ defmodule Day07Test do
       10
     ]
 
-    assert part2(program) == "Max thruster signal 18216 from sequence 97856"
+    assert Part2.run(program) == "Max thruster signal 18216 from sequence 97856"
   end
 end

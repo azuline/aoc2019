@@ -2,14 +2,14 @@ defmodule Day11Test do
   use ExUnit.Case, async: true
 
   import Day12
-  alias Day12.Moon
+  alias Day12.{Part1, Part2, Moon}
 
   test "part 1" do
-    assert 14809 == get_moons() |> part1()
+    assert 14809 == get_moons() |> Part1.run()
   end
 
   test "part 2" do
-    assert 282_270_365_571_288 == get_moons() |> part2()
+    assert 282_270_365_571_288 == get_moons() |> Part2.run()
   end
 
   @test_moons [
@@ -20,10 +20,10 @@ defmodule Day11Test do
   ]
 
   test "part 1 example 1" do
-    assert 179 == simulate_steps(@test_moons, 10) |> calculate_energy()
+    assert 179 == Part1.simulate_steps(@test_moons, 10) |> Part1.calculate_energy()
   end
 
   test "part 2 example 1" do
-    assert 2772 == part2(@test_moons)
+    assert 2772 == Part2.run(@test_moons)
   end
 end

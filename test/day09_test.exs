@@ -3,6 +3,7 @@ defmodule Day09Test do
 
   import Day09
   import IntCode, only: [run_computer: 1]
+  alias Day09.{Part1, Part2}
 
   def get_all_diagnostic_codes(name, codes \\ [], inputs \\ []) do
     case GenServer.call(name, {:run, inputs}) do
@@ -12,13 +13,13 @@ defmodule Day09Test do
   end
 
   test "part 1" do
-    assert 3_533_056_970 == get_program() |> part1()
+    assert 3_533_056_970 == get_program() |> Part1.run()
   end
 
   # The real calculation for part 2 takes several seconds.
 
   # test "part 2" do
-  #   assert 72852 == get_program() |> part2()
+  #   assert 72852 == get_program() |> Part2.run()
   # end
 
   test "part 1 boost 1" do

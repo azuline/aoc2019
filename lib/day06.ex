@@ -12,7 +12,7 @@ defmodule Day06 do
   Day 6: Universal Orbit Map
   """
 
-  alias Day06.SpaceObject
+  alias Day06.{Part1, Part2}
 
   def get_orbits() do
     Path.join(__DIR__, "inputs/day06.txt")
@@ -25,23 +25,19 @@ defmodule Day06 do
   def execute() do
     orbits = get_orbits()
 
-    IO.puts("Part 1: #{part1(orbits)}")
-    IO.puts("Part 2: #{part2(orbits)}")
+    IO.puts("Part 1: #{Part1.run(orbits)}")
+    IO.puts("Part 2: #{Part2.run(orbits)}")
   end
+end
 
-  def part1(orbits) do
+defmodule Day06.Part1 do
+  alias Day06.SpaceObject
+
+  def run(orbits) do
     orbits
     |> map_parents_to_children()
     |> construct_tree()
     |> count_orbits()
-  end
-
-  def part2(orbits) do
-    orbits
-    |> map_parents_to_children()
-    |> construct_tree()
-    |> calculate_orbital_transfers()
-    |> (&elem(&1, 1)).()
   end
 
   def map_parents_to_children(orbits, map \\ %{})
@@ -72,6 +68,18 @@ defmodule Day06 do
   def count_orbits(%{children: children} = _orbit_tree, depth \\ 1) do
     for(child <- children, do: depth + count_orbits(child, depth + 1))
     |> Enum.sum()
+  end
+end
+
+defmodule Day06.Part2 do
+  alias Day06.Part1
+
+  def run(orbits) do
+    orbits
+    |> Part1.map_parents_to_children()
+    |> Part1.construct_tree()
+    |> calculate_orbital_transfers()
+    |> (&elem(&1, 1)).()
   end
 
   def calculate_orbital_transfers(%{name: name, children: []} = _orbit_tree) do

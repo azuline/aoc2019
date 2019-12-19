@@ -4,6 +4,8 @@ defmodule Day10 do
   Day 10: Monitoring Station
   """
 
+  alias Day10.{Part1, Part2}
+
   def get_map() do
     Path.join(__DIR__, "inputs/day10.txt")
     |> File.open!()
@@ -16,11 +18,13 @@ defmodule Day10 do
   def execute() do
     map = get_map()
 
-    IO.puts("Part 1: #{part1(map)}")
-    IO.puts("Part 2: #{part2(map)}")
+    IO.puts("Part 1: #{Part1.run(map)}")
+    IO.puts("Part 2: #{Part2.run(map)}")
   end
+end
 
-  def part1(map) do
+defmodule Day10.Part1 do
+  def run(map) do
     asteroids = construct_asteroids_map(map)
     dimensions = get_asteroids_dimensions(map)
 
@@ -28,17 +32,15 @@ defmodule Day10 do
     |> (&elem(&1, 1)).()
   end
 
-  def part2(map) do
-    asteroids = construct_asteroids_map(map)
-    dimensions = get_asteroids_dimensions(map)
+  def construct_asteroids_map(map) do
+    for {row, y} <- Enum.with_index(map),
+        {is_asteroid, x} <- Enum.with_index(row),
+        into: %{},
+        do: {{x, y}, is_asteroid}
+  end
 
-    ms_coords =
-      get_monitoring_station_coords(asteroids, dimensions)
-      |> (&elem(&1, 0)).()
-
-    sort_asteroids_into_list(asteroids, ms_coords)
-    |> get_200th_asteroid_coords()
-    |> (fn {x, y} -> 100 * x + y end).()
+  def get_asteroids_dimensions(map) do
+    {length(Enum.at(map, 0)), length(map)}
   end
 
   def get_monitoring_station_coords(asteroids, dimensions) do
@@ -54,18 +56,7 @@ defmodule Day10 do
     |> Enum.max_by(&elem(&1, 1))
   end
 
-  def construct_asteroids_map(map) do
-    for {row, y} <- Enum.with_index(map),
-        {is_asteroid, x} <- Enum.with_index(row),
-        into: %{},
-        do: {{x, y}, is_asteroid}
-  end
-
-  def get_asteroids_dimensions(map) do
-    {length(Enum.at(map, 0)), length(map)}
-  end
-
-  def count_visible_asteroids(coords, asteroids, {width, height}) do
+  defp count_visible_asteroids(coords, asteroids, {width, height}) do
     for row <- 0..(width - 1), col <- 0..(height - 1) do
       if asteroids[{row, col}] and
            coords != {row, col} and
@@ -74,6 +65,49 @@ defmodule Day10 do
          else: 0
     end
     |> Enum.sum()
+  end
+
+  # Recursive function to check for asteroids that block line of sight.
+
+  defp exists_blocking_asteroid?({x, y} = coords, asteroid, asteroids) do
+    {mx, my} = slope = calculate_slope(coords, asteroid)
+
+    exists_blocking_asteroid?({x + mx, y + my}, asteroid, slope, asteroids)
+  end
+
+  defp exists_blocking_asteroid?({x, y} = coords, asteroid, {mx, my} = slope, asteroids) do
+    cond do
+      coords == asteroid -> false
+      asteroids[coords] -> true
+      true -> exists_blocking_asteroid?({x + mx, y + my}, asteroid, slope, asteroids)
+    end
+  end
+
+  defp calculate_slope({x1, y1}, {x2, y2}) do
+    mx = x2 - x1
+    my = y2 - y1
+
+    case Integer.gcd(mx, my) do
+      1 -> {mx, my}
+      gcd -> {trunc(mx / gcd), trunc(my / gcd)}
+    end
+  end
+end
+
+defmodule Day10.Part2 do
+  alias Day10.Part1
+
+  def run(map) do
+    asteroids = Part1.construct_asteroids_map(map)
+    dimensions = Part1.get_asteroids_dimensions(map)
+
+    ms_coords =
+      Part1.get_monitoring_station_coords(asteroids, dimensions)
+      |> (&elem(&1, 0)).()
+
+    sort_asteroids_into_list(asteroids, ms_coords)
+    |> get_200th_asteroid_coords()
+    |> (fn {x, y} -> 100 * x + y end).()
   end
 
   def sort_asteroids_into_list(asteroids, {ms_x, ms_y} = ms_coords) do
@@ -113,32 +147,6 @@ defmodule Day10 do
       diff.x > 0 and diff.y >= 0 -> {1, diff.y / diff.x}
       diff.x <= 0 and diff.y > 0 -> {2, abs(diff.x / diff.y)}
       diff.x < 0 and diff.y <= 0 -> {3, diff.y / diff.x}
-    end
-  end
-
-  # Recursive function to check for asteroids that block line of sight.
-
-  defp exists_blocking_asteroid?({x, y} = coords, asteroid, asteroids) do
-    {mx, my} = slope = calculate_slope(coords, asteroid)
-
-    exists_blocking_asteroid?({x + mx, y + my}, asteroid, slope, asteroids)
-  end
-
-  defp exists_blocking_asteroid?({x, y} = coords, asteroid, {mx, my} = slope, asteroids) do
-    cond do
-      coords == asteroid -> false
-      asteroids[coords] -> true
-      true -> exists_blocking_asteroid?({x + mx, y + my}, asteroid, slope, asteroids)
-    end
-  end
-
-  defp calculate_slope({x1, y1}, {x2, y2}) do
-    mx = x2 - x1
-    my = y2 - y1
-
-    case Integer.gcd(mx, my) do
-      1 -> {mx, my}
-      gcd -> {trunc(mx / gcd), trunc(my / gcd)}
     end
   end
 

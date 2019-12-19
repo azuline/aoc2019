@@ -2,13 +2,14 @@ defmodule Day10Test do
   use ExUnit.Case, async: true
 
   import Day10
+  alias Day10.{Part1, Part2}
 
   test "part 1" do
-    assert 319 == get_map() |> part1()
+    assert 319 == get_map() |> Part1.run()
   end
 
   test "part 2" do
-    assert 517 == get_map() |> part2()
+    assert 517 == get_map() |> Part2.run()
   end
 
   def parse_map(map) do
@@ -28,7 +29,7 @@ defmodule Day10Test do
         "...##"
       ])
 
-    assert 8 == part1(map)
+    assert 8 == Part1.run(map)
   end
 
   test "part 1 example 2" do
@@ -46,7 +47,35 @@ defmodule Day10Test do
         ".#....####"
       ])
 
-    assert 33 == part1(map)
+    assert 33 == Part1.run(map)
+  end
+
+  test "part 2 example 1" do
+    map =
+      parse_map([
+        ".#..##.###...#######",
+        "##.############..##.",
+        ".#.######.########.#",
+        ".###.#######.####.#.",
+        "#####.##.#.##.###.##",
+        "..#####..#.#########",
+        "####################",
+        "#.####....###.#.#.##",
+        "##.#################",
+        "#####.##.###..####..",
+        "..######..##.#######",
+        "####.##.####...##..#",
+        ".#####..#.######.###",
+        "##...#.##########...",
+        "#.##########.#######",
+        ".####.#.###.###.#.##",
+        "....##.##.###..#####",
+        ".#.#.###########.###",
+        "#.#.#.#####.####.###",
+        "###.##.####.##.#..##"
+      ])
+
+    assert 802 == Part2.run(map)
   end
 
   defp rel(x, y), do: {5 + x, 5 + y}
@@ -62,9 +91,9 @@ defmodule Day10Test do
         "....#",
         "...##"
       ])
-      |> construct_asteroids_map()
+      |> Part1.construct_asteroids_map()
 
-    asteroids_list = sort_asteroids_into_list(asteroids, ms_coord)
+    asteroids_list = Part2.sort_asteroids_into_list(asteroids, ms_coord)
 
     assert asteroids_list == [
              [{4, 0}],
@@ -80,7 +109,7 @@ defmodule Day10Test do
   test "get 200th asteroid" do
     asteroids = [[0, :asteroid]] ++ for i <- 1..198, do: [i]
 
-    assert :asteroid == get_200th_asteroid_coords(asteroids)
+    assert :asteroid == Part2.get_200th_asteroid_coords(asteroids)
   end
 
   # Remark: 0,0 coord is in the top left.
@@ -88,8 +117,8 @@ defmodule Day10Test do
   test "calculate slope weight top right sector" do
     ms_coord = {2, 2}
 
-    weight1 = calculate_slope_weight(rel(3, -1), ms_coord)
-    weight2 = calculate_slope_weight(rel(-1, 3), ms_coord)
+    weight1 = Part2.calculate_slope_weight(rel(3, -1), ms_coord)
+    weight2 = Part2.calculate_slope_weight(rel(-1, 3), ms_coord)
 
     assert weight1 == {1, 1 / 3}
     assert weight2 == {1, 3}
@@ -98,8 +127,8 @@ defmodule Day10Test do
   test "calculate slope weight bottom right sector" do
     ms_coord = {5, 5}
 
-    weight1 = calculate_slope_weight(rel(3, 1), ms_coord)
-    weight2 = calculate_slope_weight(rel(1, 3), ms_coord)
+    weight1 = Part2.calculate_slope_weight(rel(3, 1), ms_coord)
+    weight2 = Part2.calculate_slope_weight(rel(1, 3), ms_coord)
 
     assert weight1 == {1, 1 / 3}
     assert weight2 == {1, 3}
@@ -108,8 +137,8 @@ defmodule Day10Test do
   test "calculate slope weight bottom left sector" do
     ms_coord = {5, 5}
 
-    weight1 = calculate_slope_weight(rel(-1, 3), ms_coord)
-    weight2 = calculate_slope_weight(rel(-3, 1), ms_coord)
+    weight1 = Part2.calculate_slope_weight(rel(-1, 3), ms_coord)
+    weight2 = Part2.calculate_slope_weight(rel(-3, 1), ms_coord)
 
     assert weight1 == {2, 1 / 3}
     assert weight2 == {2, 3}
@@ -118,8 +147,8 @@ defmodule Day10Test do
   test "calculate slope weight top left sector" do
     ms_coord = {5, 5}
 
-    weight1 = calculate_slope_weight(rel(-3, -1), ms_coord)
-    weight2 = calculate_slope_weight(rel(-1, -3), ms_coord)
+    weight1 = Part2.calculate_slope_weight(rel(-3, -1), ms_coord)
+    weight2 = Part2.calculate_slope_weight(rel(-1, -3), ms_coord)
 
     assert weight1 == {3, 1 / 3}
     assert weight2 == {3, 3}

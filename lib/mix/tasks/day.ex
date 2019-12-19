@@ -6,7 +6,8 @@ defmodule Mix.Tasks.Day do
   def run(args) do
     args
     |> List.first()
-    |> (&("Elixir.Day" <> &1)).()
+    |> String.pad_leading(2, "0")
+    |> (&"Elixir.Day#{&1}").()
     |> String.to_atom()
     |> apply(:execute, [])
   end

@@ -4,38 +4,48 @@ defmodule Day01 do
   Day 1: The Tyranny of the Rocket Equation
   """
 
+  alias Day01.{Part1, Part2}
+
   def get_masses() do
     Path.join(__DIR__, "inputs/day01.txt")
     |> File.open!()
     |> IO.stream(:line)
     |> Stream.map(&String.trim/1)
     |> Stream.map(&String.to_integer/1)
+    |> Enum.to_list()
   end
 
   def execute() do
     masses = get_masses()
 
-    IO.puts("Part 1: #{part1(masses)}")
-    IO.puts("Part 2: #{part2(masses)}")
+    IO.puts("Part 1: #{Part1.run(masses)}")
+    IO.puts("Part 2: #{Part2.run(masses)}")
   end
+end
 
-  def part1(masses), do: runner(masses, &fuel_of_mass_calculator/1)
-  def part2(masses), do: runner(masses, &fuel_of_fuel_calculator/1)
-
-  def runner(masses, calculate_fuel) do
-    masses
-    |> Stream.map(calculate_fuel)
+defmodule Day01.Part1 do
+  def run(masses) do
+    Stream.map(masses, &calculate_fuel/1)
     |> Enum.sum()
   end
 
-  def fuel_of_mass_calculator(mass) do
+  def calculate_fuel(mass) do
     div(mass, 3) - 2
   end
+end
 
-  def fuel_of_fuel_calculator(mass) do
-    case fuel_of_mass_calculator(mass) do
+defmodule Day01.Part2 do
+  alias Day01.Part1
+
+  def run(masses) do
+    Stream.map(masses, &calculate_fuel/1)
+    |> Enum.sum()
+  end
+
+  def calculate_fuel(mass) do
+    case Part1.calculate_fuel(mass) do
       fuel when fuel <= 0 -> 0
-      fuel -> fuel + fuel_of_fuel_calculator(fuel)
+      fuel -> fuel + calculate_fuel(fuel)
     end
   end
 end
