@@ -23,7 +23,7 @@ defmodule IntCode do
 
   @impl true
   def handle_call({:run, new_inputs}, _from, %{inputs: inputs} = state) do
-    {exit_type, state} = run_program(%{state | inputs: inputs ++ new_inputs})
+    {exit_type, state} = run_program(%{state | inputs: new_inputs ++ inputs})
 
     {:reply, {exit_type, state.diagnostic}, state, :hibernate}
   end
