@@ -1,4 +1,4 @@
-defmodule IntCode do
+defmodule Intcode do
   use GenServer
 
   def run_computer(name, inputs \\ [], timeout \\ 5000) do

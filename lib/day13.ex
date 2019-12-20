@@ -24,7 +24,7 @@ end
 
 defmodule Day13.Part1 do
   def run(program) do
-    GenServer.start_link(IntCode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer)
     tiles = generate_tiles()
     GenServer.stop(Computer)
     num_blocks(tiles)
@@ -54,7 +54,7 @@ end
 defmodule Day13.Part2 do
   def run(program) do
     program = List.replace_at(program, 0, 2)
-    GenServer.start_link(IntCode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer)
     score = play_game()
     GenServer.stop(Computer)
     score

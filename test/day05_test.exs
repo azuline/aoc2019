@@ -2,7 +2,7 @@ defmodule Day05Test do
   use ExUnit.Case, async: true
 
   import Day05
-  import IntCode, only: [run_computer: 2]
+  import Intcode, only: [run_computer: 2]
   alias Day05.{Part1, Part2}
 
   test "part 1" do
@@ -64,12 +64,12 @@ defmodule Day05Test do
   ]
 
   test "part 2 input 8" do
-    GenServer.start_link(IntCode, @example_program, name: Test)
+    GenServer.start_link(Intcode, @example_program, name: Test)
     assert run_computer(Test, [8]) == 1000
   end
 
   test "part 2 input 9" do
-    GenServer.start_link(IntCode, @example_program, name: Test)
+    GenServer.start_link(Intcode, @example_program, name: Test)
     assert run_computer(Test, [9]) == 1001
   end
 end

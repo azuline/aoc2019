@@ -24,7 +24,7 @@ end
 
 defmodule Day07.Part1 do
   alias Day07.Combinatorics
-  import IntCode, only: [run_computer: 2]
+  import Intcode, only: [run_computer: 2]
 
   def run(program) do
     Combinatorics.get_permutations([0, 1, 2, 3, 4])
@@ -53,7 +53,7 @@ defmodule Day07.Part1 do
 
   def start_computers(program) do
     for i <- 0..4,
-        do: GenServer.start_link(IntCode, program, name: String.to_atom("Computer#{i}"))
+        do: GenServer.start_link(Intcode, program, name: String.to_atom("Computer#{i}"))
   end
 
   def stop_computers() do

@@ -24,7 +24,7 @@ end
 
 defmodule Day11.Part1 do
   def run(program) do
-    GenServer.start_link(IntCode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer)
     panels = run_painting_robot()
     GenServer.stop(Computer)
     map_size(panels)
@@ -68,7 +68,7 @@ defmodule Day11.Part2 do
   alias Day11.Part1
 
   def run(program) do
-    GenServer.start_link(IntCode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer)
     panels = Part1.run_painting_robot(%{{0, 0} => 1})
     GenServer.stop(Computer)
     format_panels(panels)
