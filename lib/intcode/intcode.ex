@@ -8,17 +8,17 @@ defmodule Intcode do
     end
   end
 
+  @empty_state %{
+    program: [],
+    position: 0,
+    inputs: [],
+    diagnostic: 0,
+    relative_base: 0
+  }
+
   @impl true
   def init(program) do
-    state = %{
-      program: program,
-      position: 0,
-      inputs: [],
-      diagnostic: 0,
-      relative_base: 0
-    }
-
-    {:ok, state}
+    {:ok, %{@empty_state | program: program}}
   end
 
   @impl true
@@ -26,6 +26,16 @@ defmodule Intcode do
     {exit_type, state} = run_program(%{state | inputs: new_inputs ++ inputs})
 
     {:reply, {exit_type, state.diagnostic}, state, :hibernate}
+  end
+
+  @impl true
+  def handle_call({:get_state}, _from, state) do
+    {:reply, state, state, :hibernate}
+  end
+
+  @impl true
+  def handle_call({:set_state, state}, _from, _) do
+    {:reply, :ok, Map.merge(@empty_state, state), :hibernate}
   end
 
   def run_program(state) do
