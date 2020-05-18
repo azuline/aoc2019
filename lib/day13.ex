@@ -24,20 +24,20 @@ end
 
 defmodule Day13.Part1 do
   def run(program) do
-    GenServer.start_link(Intcode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer13)
     tiles = generate_tiles()
-    GenServer.stop(Computer)
+    GenServer.stop(Computer13)
     num_blocks(tiles)
   end
 
   def generate_tiles(tiles \\ %{}) do
-    case GenServer.call(Computer, {:run, []}) do
+    case GenServer.call(Computer13, {:run, []}) do
       {:exit, _} ->
         tiles
 
       {:output, x} ->
-        {:output, y} = GenServer.call(Computer, {:run, []})
-        {:output, type} = GenServer.call(Computer, {:run, []})
+        {:output, y} = GenServer.call(Computer13, {:run, []})
+        {:output, type} = GenServer.call(Computer13, {:run, []})
 
         generate_tiles(Map.put(tiles, {x, y}, type))
     end
@@ -54,22 +54,22 @@ end
 defmodule Day13.Part2 do
   def run(program) do
     program = List.replace_at(program, 0, 2)
-    GenServer.start_link(Intcode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer13)
     score = play_game()
-    GenServer.stop(Computer)
+    GenServer.stop(Computer13)
     score
   end
 
   def play_game(paddle \\ {0, 0}, ball \\ {0, 0}, score \\ 0) do
     input = determine_input(paddle, ball)
 
-    case GenServer.call(Computer, {:run, [input]}) do
+    case GenServer.call(Computer13, {:run, [input]}) do
       {:exit, _} ->
         score
 
       {:output, x} ->
-        {:output, y} = GenServer.call(Computer, {:run, []})
-        {:output, type} = GenServer.call(Computer, {:run, []})
+        {:output, y} = GenServer.call(Computer13, {:run, []})
+        {:output, type} = GenServer.call(Computer13, {:run, []})
 
         case {x, y, type} do
           {-1, 0, score} ->

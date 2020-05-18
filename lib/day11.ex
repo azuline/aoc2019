@@ -24,9 +24,9 @@ end
 
 defmodule Day11.Part1 do
   def run(program) do
-    GenServer.start_link(Intcode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer11)
     panels = run_painting_robot()
-    GenServer.stop(Computer)
+    GenServer.stop(Computer11)
     map_size(panels)
   end
 
@@ -38,7 +38,7 @@ defmodule Day11.Part1 do
   def run_painting_robot(panels \\ %{}, {x, y} = coords \\ {0, 0}, direction \\ :up) do
     input = Map.get(panels, coords, 0)
 
-    case GenServer.call(Computer, {:run, [input]}) do
+    case GenServer.call(Computer11, {:run, [input]}) do
       {:exit, _} ->
         panels
 
@@ -46,7 +46,7 @@ defmodule Day11.Part1 do
         panels = Map.put(panels, coords, color)
 
         direction =
-          case GenServer.call(Computer, {:run, []}) do
+          case GenServer.call(Computer11, {:run, []}) do
             {_, 0} -> @cw_rotations[direction]
             {_, 1} -> @ccw_rotations[direction]
           end
@@ -68,9 +68,9 @@ defmodule Day11.Part2 do
   alias Day11.Part1
 
   def run(program) do
-    GenServer.start_link(Intcode, program, name: Computer)
+    GenServer.start_link(Intcode, program, name: Computer11)
     panels = Part1.run_painting_robot(%{{0, 0} => 1})
-    GenServer.stop(Computer)
+    GenServer.stop(Computer11)
     format_panels(panels)
   end
 

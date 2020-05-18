@@ -26,9 +26,9 @@ defmodule Day09.Part1 do
   import Intcode, only: [run_computer: 2]
 
   def run(program) do
-    GenServer.start_link(Intcode, program, name: Computer)
-    output = run_computer(Computer, [1])
-    GenServer.stop(Computer)
+    GenServer.start_link(Intcode, program, name: Computer09)
+    output = run_computer(Computer09, [1])
+    GenServer.stop(Computer09)
     output
   end
 end
@@ -37,9 +37,9 @@ defmodule Day09.Part2 do
   import Intcode, only: [run_computer: 3]
 
   def run(program) do
-    GenServer.start_link(Intcode, program, name: Computer)
-    output = run_computer(Computer, [2], 20000)
-    GenServer.stop(Computer)
+    GenServer.start_link(Intcode, program, name: Computer09)
+    output = run_computer(Computer09, [2], 20000)
+    GenServer.stop(Computer09)
     output
   end
 end

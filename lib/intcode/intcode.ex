@@ -91,6 +91,7 @@ defmodule Intcode do
         code == 2 -> execute_multiplication(program, params)
         code == 7 -> execute_lt_substitution(program, params)
         code == 8 -> execute_eq_substitution(program, params)
+        true -> program
       end
 
     run_program(%{state | program: program, position: next_pos})

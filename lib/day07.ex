@@ -37,11 +37,11 @@ defmodule Day07.Part1 do
     start_computers(program)
 
     output =
-      run_computer(:Computer0, [Enum.at(sequence, 0), 0])
-      |> (&run_computer(:Computer1, [Enum.at(sequence, 1), &1])).()
-      |> (&run_computer(:Computer2, [Enum.at(sequence, 2), &1])).()
-      |> (&run_computer(:Computer3, [Enum.at(sequence, 3), &1])).()
-      |> (&run_computer(:Computer4, [Enum.at(sequence, 4), &1])).()
+      run_computer(:Computer070, [Enum.at(sequence, 0), 0])
+      |> (&run_computer(:Computer071, [Enum.at(sequence, 1), &1])).()
+      |> (&run_computer(:Computer072, [Enum.at(sequence, 2), &1])).()
+      |> (&run_computer(:Computer073, [Enum.at(sequence, 3), &1])).()
+      |> (&run_computer(:Computer074, [Enum.at(sequence, 4), &1])).()
 
     stop_computers()
     output
@@ -53,11 +53,11 @@ defmodule Day07.Part1 do
 
   def start_computers(program) do
     for i <- 0..4,
-        do: GenServer.start_link(Intcode, program, name: String.to_atom("Computer#{i}"))
+        do: GenServer.start_link(Intcode, program, name: String.to_atom("Computer07#{i}"))
   end
 
   def stop_computers() do
-    for i <- 0..4, do: GenServer.stop(String.to_atom("Computer#{i}"))
+    for i <- 0..4, do: GenServer.stop(String.to_atom("Computer07#{i}"))
   end
 end
 
@@ -86,18 +86,18 @@ defmodule Day07.Part2 do
     sequence
     |> Enum.with_index()
     |> Enum.reduce(0, fn {setting, i}, input ->
-      GenServer.call(String.to_atom("Computer#{i}"), {:run, [setting, input]})
+      GenServer.call(String.to_atom("Computer07#{i}"), {:run, [setting, input]})
       |> (&elem(&1, 1)).()
     end)
   end
 
   defp run_circuit_loop(program, input) do
     output =
-      GenServer.call(:Computer0, {:run, [input]})
-      |> (&GenServer.call(:Computer1, {:run, [elem(&1, 1)]})).()
-      |> (&GenServer.call(:Computer2, {:run, [elem(&1, 1)]})).()
-      |> (&GenServer.call(:Computer3, {:run, [elem(&1, 1)]})).()
-      |> (&GenServer.call(:Computer4, {:run, [elem(&1, 1)]})).()
+      GenServer.call(:Computer070, {:run, [input]})
+      |> (&GenServer.call(:Computer071, {:run, [elem(&1, 1)]})).()
+      |> (&GenServer.call(:Computer072, {:run, [elem(&1, 1)]})).()
+      |> (&GenServer.call(:Computer073, {:run, [elem(&1, 1)]})).()
+      |> (&GenServer.call(:Computer074, {:run, [elem(&1, 1)]})).()
 
     case output do
       {:output, code} -> run_circuit_loop(program, code)
