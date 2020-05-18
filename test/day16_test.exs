@@ -19,6 +19,12 @@ defmodule Day16Test do
     assert 24_176_176 == digits |> Part1.run()
   end
 
+  # Takes a few seconds to run.
+
+  # test "part 2" do
+  #   assert 62858988 == get_signal() |> Part2.run()
+  # end
+
   test "part 2 example 1" do
     digits =
       "03036732577212944063491565474664"
