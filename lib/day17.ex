@@ -17,19 +17,12 @@ defmodule Day17 do
   def execute() do
     program = get_program()
 
-    program
-    |> Part1.compute_camera_output()
-    |> (&to_string/1).()
-    |> IO.puts()
-
     IO.puts("Part 1: #{Part1.run(program)}")
     IO.puts("Part 2: #{Part2.run(program)}")
   end
 end
 
 defmodule Day17.Part1 do
-  import Intcode, only: [run_computer: 2]
-
   def run(program) do
     program
     |> compute_camera_output()
@@ -80,20 +73,14 @@ defmodule Day17.Part2 do
   alias Day17.Part1
 
   def run(program) do
-    GenServer.start_link(Intcode, program, name: Computer17_2)
-    output = Part1.accumulate_output(Computer17_2)
+    output = program |> Part1.compute_camera_output()
 
     start_coord = output |> get_start_coord()
     coords = output |> Part1.convert_to_coords()
 
-    space_dust =
-      compute_path(start_coord, coords)
-      |> split_path_into_functions()
-      |> execute_robot()
-
-    GenServer.stop(Computer17_2)
-
-    space_dust
+    compute_path(start_coord, coords)
+    |> split_path_into_functions()
+    |> execute_robot(program)
   end
 
   def get_start_coord([char | scaffolding], {x, y} \\ {0, 0}) do
@@ -161,16 +148,6 @@ defmodule Day17.Part2 do
     end
   end
 
-  def split_path_into_functions(path) do
-    # TODO
-    nil
-  end
-
-  def execute_robot({main, functions}) do
-    # TODO
-    nil
-  end
-
   def move_coord({x, y}, dir) do
     case dir do
       :up -> {x, y - 1}
@@ -187,5 +164,82 @@ defmodule Day17.Part2 do
       :right -> :left
       :left -> :right
     end
+  end
+
+  @doc """
+  A brute-force function splitter. We need to satisfy the following requirements:
+  - Three functions
+  - Max function length of 20
+  - Entire path encoded into <=20 functions
+  """
+  def split_path_into_functions(path, fn_lens \\ {1, 1, 1}) do
+    {f1_len, f2_len, f3_len} = fn_lens
+
+    {f1, rem} = Enum.split(path, f1_len)
+    {rem, _} = trim_functions(rem, [f1])
+    {f2, rem} = Enum.split(rem, f2_len)
+    {rem, _} = trim_functions(rem, [f1, f2])
+    f3 = Enum.take(rem, f3_len)
+
+    {rem, main} = trim_functions(path, [f1, f2, f3])
+
+    cond do
+      rem == [] && length(main) <= 20 ->
+        {main, [f1, f2, f3]}
+
+      f3_len == 20 && f2_len == 20 && f1_len == 20 ->
+        raise "well something's wrong"
+
+      f3_len == 20 && f2_len == 20 ->
+        split_path_into_functions(path, {f1_len + 1, 1, 1})
+
+      f3_len == 20 ->
+        split_path_into_functions(path, {f1_len, f2_len + 1, 1})
+
+      true ->
+        split_path_into_functions(path, {f1_len, f2_len, f3_len + 1})
+    end
+  end
+
+  @indices %{
+    0 => "A",
+    1 => "B",
+    2 => "C"
+  }
+
+  def trim_functions(path, functions, main \\ []) do
+    {path, main_new} =
+      functions
+      |> Enum.with_index()
+      |> Enum.reduce({path, main}, fn {func, index}, {path, main} ->
+        {prefix, remainder} = Enum.split(path, length(func))
+
+        if func == prefix do
+          {remainder, main ++ [@indices[index]]}
+        else
+          {path, main}
+        end
+      end)
+
+    if main != main_new,
+      do: trim_functions(path, functions, main_new),
+      else: {path, main}
+  end
+
+  def execute_robot({main, [f1, f2, f3]}, program) do
+    program = List.replace_at(program, 0, 2)
+
+    input =
+      [main, f1, f2, f3]
+      |> Enum.map(&Enum.join(&1, ","))
+      |> Enum.join("\n")
+      |> (&(&1 <> "\nn\n")).()
+      |> to_charlist()
+
+    GenServer.start_link(Intcode, program, name: Computer17_2)
+    {:output, space_dust} = GenServer.call(Computer17_2, {:run, input})
+    GenServer.stop(Computer17_2)
+
+    space_dust
   end
 end
