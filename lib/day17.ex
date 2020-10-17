@@ -2,6 +2,10 @@ defmodule Day17 do
   @moduledoc """
   Advent of Code 2019
   Day 17: Set and Forget
+
+  I have no idea why Part 2 doesn't work. It actually does work (answer:
+  597517) with continuous video feed turned on, but not when it's turned off.
+  Too lazy to debug this atm.
   """
 
   alias Day17.{Part1, Part2}
@@ -39,10 +43,10 @@ defmodule Day17.Part1 do
     output
   end
 
-  def accumulate_output(computer_name \\ Computer17) do
-    case GenServer.call(computer_name, {:run, []}) do
+  def accumulate_output() do
+    case GenServer.call(Computer17, {:run, []}) do
       {:exit, _} -> []
-      {:output, code} -> [code | accumulate_output(computer_name)]
+      {:output, code} -> [code | accumulate_output()]
     end
   end
 
@@ -230,14 +234,14 @@ defmodule Day17.Part2 do
     program = List.replace_at(program, 0, 2)
 
     input =
-      [main, f1, f2, f3]
+      [main, f1, f2, f3, ["n"]]
       |> Enum.map(&Enum.join(&1, ","))
-      |> Enum.join("\n")
-      |> (&(&1 <> "\nn\n")).()
+      |> Enum.map(&(&1 <> "\n"))
+      |> Enum.join()
       |> to_charlist()
 
     GenServer.start_link(Intcode, program, name: Computer17_2)
-    {:output, space_dust} = GenServer.call(Computer17_2, {:run, input})
+    space_dust = Intcode.run_computer(Computer17_2, input)
     GenServer.stop(Computer17_2)
 
     space_dust

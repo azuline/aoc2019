@@ -41,14 +41,10 @@ defmodule Day06.Part1 do
   end
 
   def map_parents_to_children(orbits, map \\ %{})
-
-  def map_parents_to_children([], map) do
-    map
-  end
+  def map_parents_to_children([], map), do: map
 
   def map_parents_to_children([[parent, child] | orbits], map) do
     map = Map.update(map, parent, [child], &[child | &1])
-
     map_parents_to_children(orbits, map)
   end
 
